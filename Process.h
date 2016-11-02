@@ -8,23 +8,31 @@
 class Process: public Command {
 
   public:
-	Process(){};
+    Process(){};
 	
-	void execute(){
-	
-      pid_t pid;
+    void execute(){		
+
+      pid_t pid = fork();
 		
-	  pid = fork();
-		
-	  if ( pid == 0 ){
-        //child
-		// child calls execpvp() with char[] passed from parser
-	  }
-	  
-	  if ( pid > 0 ){
-	    //parent    
-		// Parent should monitor child's running status
-	  }
+      if ( pid == -1 ){
+
+        perror("fork");
+      }
+
+      if ( pid == 0  ){
+        //child     
+        if ( execvp() == -1 )
+          perror("exec");
+        // child calls evecvp() here with char* and char*[]
+      }
+
+      	  
+      
+      if ( pid > 0 ){
+        //parent
+        wait(0);    
+        // FIXME Parent should monitor child's running status
+      }
 		
 	
   private:

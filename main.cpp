@@ -9,6 +9,19 @@
 
 int main(){
 
+  // instantiate a Parser object here
+  int status = 0;
+  
+  
+  do {
+    
+    // take in line from user
+    // Process obect = Parser(userline);
+    // Process->execute();
+    
+  } while ( status != 0);
+  
+  
   /************************************** 
    Testing: output is: "Hello"
   
@@ -59,7 +72,7 @@ int main(){
  dummy1  dummy2
   
   **************************************/
-  
+  /*
   Echo *echo1 = new Echo("Hello");
   Dummy *dummy1 = new Dummy;
   Dummy *dummy2 = new Dummy;
@@ -68,6 +81,16 @@ int main(){
 
   and1->execute();
   
+*/
   
+  do {
+
+    // Take input from user
+    // Feed input to parser
+    // parserobject->execute();
+
+
+  } while(/*status!=exit integer*/)
+
   return 0;
 }
