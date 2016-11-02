@@ -19,7 +19,7 @@ class Process: public Command {
         perror("fork");
       }
 
-      if ( pid == 0  ){
+      if ( pid == 0 ){
         //child     
         if ( execvp() == -1 )
           perror("exec");
