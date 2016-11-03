@@ -9,6 +9,12 @@ class Line: public Command{
   public:
     Line(){};
 	
+/***********************************************************
+ Line->execute(): Because line contains a vector of base
+     pointers to potentially multiple commends, it calls the
+     execute() functions of all of its owned Processes in a
+     loop.
+***********************************************************/  
 	  void execute(){
     
       for (unsigned int i = 0; i < memory.sizeof(); ++i){

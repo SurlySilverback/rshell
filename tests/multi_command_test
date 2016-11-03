@@ -1,0 +1,30 @@
+#multi_command_test
+#Test cases (remove all but the one you wish to test)
+
+#Cases below include comment and exit testing
+
+echo Hello && echo World
+
+ekko Hello && echo World
+
+echo Chocolate || echo Vanilla
+
+ekko Chocolate || echo Vanilla
+
+ekko typoLOL; echo foo; echo bar
+
+echo foo && echo bar; echo zap
+
+echo foo || echo bar ; echo zap
+
+echo foo||echo bar;echo zap
+
+;
+
+&&
+
+echo foo || #echo bar
+
+ls -l; mkdir SUPER#FLY
+
+exit 0 && echo This shouldnt appear

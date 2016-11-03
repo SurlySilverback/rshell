@@ -1,10 +1,13 @@
 objects = main.o and.o line.o or.o parser.o
-
-rshell : $(objects)
-	cc -Wall -Werror -ansi -pedantic rshell $(objects)
+VPATH = src
 
 all : $(objects)
+	mkdir -p bin
 	cc -Wall -Werror -ansi -pedantic all $(objects)
+	
+rshell : $(objects)
+	mkdir -p bin
+	cc -Wall -Werror -ansi -pedantic rshell $(objects)
 
 main.o : command.h and.h or.h process.h
 and.o : command.h
