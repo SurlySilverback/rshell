@@ -4,6 +4,7 @@
 #include "Or.h"
 #include "Process.h"
 #include "Line.h"
+#include "Parser.h"
 #include <string>
 
 int main(){
@@ -13,9 +14,10 @@ int main(){
   std::string user_input;
   
   do {
-    
-    getline( cin, user_input );
-    Line* l = new Parser(user_input);
+    std::cout << "$";
+    getline( std::cin, user_input );
+    Parser* p = new Parser(user_input);
+    Line* l = p->parse();
     l->execute();
     
   } while ( status != 0 );

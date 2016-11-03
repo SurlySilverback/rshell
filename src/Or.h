@@ -7,7 +7,6 @@ class Or: public Command{
 
   public:
     Or(Command *lhs, Command *rhs){
-    
       this->LHS = lhs;
       this->RHS = rhs;
     }
@@ -47,9 +46,10 @@ class Or: public Command{
   
    //FIXME: DEBUG print
    void print() {
-     std::cout << "connector: OR \nchildren: ";
+     std::cout << "connector: OR \nchildren:\n";
      this->LHS->print();
      this->RHS->print();
+
      std::cout << std::endl;   
    }
 

@@ -1,15 +1,13 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include <string>
+#include <string.h>
 #include <vector>
 #include <iostream>
 #include "Tree_Construct_Record.h"
 #include "Token_Interpreter.h"
 #include "Tree_Record_Updater.h"
 #include "Process.h"
-
-//FWD decls
-class Line;
+#include "Line.h"
 
 class Parser {
   private:
@@ -39,9 +37,8 @@ char* Parser::string_to_char(std::string input_line) const {
 }
 
 Line* Parser::parse() {
-
-  //Line* current_line
-  std::vector<Command*> line; //temp version
+  std::vector<Command*> line;
+  Line* new_line_object;
  
   //these singletons keep track of tree states and perform transitions
   Tree_Construct_Record* tree_record    = new Tree_Construct_Record(token_vector.size()); 
@@ -57,9 +54,11 @@ Line* Parser::parse() {
     
     switch(token_interp.token_type(tree_record)) {   
       case COMMENT:
+        std::cout << "COMMENT\n";
         record_updater->finalize_record();
 
-        //append current_line with record->root  
+        line.push_back(closure_handler(record_updater));
+
         i = token_vector.size();
         break;
       
@@ -68,9 +67,7 @@ Line* Parser::parse() {
         record_updater->connect_update(token_vector.at(i));
    
         if (token_interp.contains_closure_char()) {
-          //append current_line w/ closure_handler(record_updater);
-          line.push_back(closure_handler(record_updater)); //alt vector test version
-
+          line.push_back(closure_handler(record_updater));
           record_updater->reinit_record(token_vector.size());
         }
         break;
@@ -80,9 +77,7 @@ Line* Parser::parse() {
         record_updater->process_update(token_vector.at(i)); 
 
         if (token_interp.contains_closure_char()) {
-          //append current_line w/ closure_handler(record_updater);
-          line.push_back(closure_handler(record_updater)); //alt vector test version
-          
+          line.push_back(closure_handler(record_updater));          
           record_updater->reinit_record(token_vector.size());
         }
         break;
@@ -92,24 +87,19 @@ Line* Parser::parse() {
         record_updater->arg_update(token_vector.at(i));
  
         if (token_interp.contains_closure_char()) {
-          //append current_line w/ closure_handler(record_updater);
-          line.push_back(closure_handler(record_updater)); //alt vector test version     
-
+          line.push_back(closure_handler(record_updater));   
           record_updater->reinit_record(token_vector.size());
         }
     }
   }
- 
-  //append current_line w/ closure_handler(record_updater); 
-  line.push_back(closure_handler(record_updater)); //alt vector test version
- 
+  line.push_back(closure_handler(record_updater)); 
+  new_line_object = new Line(line);
+  
   //FIXME: debug print
-  std::cout << "printing line contents\n";
-
   for (unsigned i = 0; i < line.size(); i++) 
     line.at(i)->print(); 
   
-  return NULL;
+  return new_line_object; 
 }
 
 //convert string to vector of c-string tokens
@@ -126,6 +116,8 @@ std::vector<char*> Parser::tokenize() const {
 }
 
 Command* Parser::closure_handler(Tree_Record_Updater* record_updater) {
+  std::cout << "encountered closure char\n";
+
   Command* root = record_updater->finalize_record();
   record_updater->reinit_record(token_vector.size());  
 

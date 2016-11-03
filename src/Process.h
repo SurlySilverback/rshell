@@ -17,7 +17,8 @@ class Process: public Command {
     Process(char* exec_name, char** args) { 
       // exec_name is the name of the executable
       this-> exec_name = exec_name; 
-      
+      this-> args = args; // FIXME: Delete this later and use copy loops
+      /*
       int counter = 1;
       
       for (unsigned i = 0; args[i]!= NULL; ++i)
@@ -29,8 +30,8 @@ class Process: public Command {
       for (unsigned i = 1; i < counter; ++i){
         
         this-> args[i] = args[i];
-      }
-    };
+      }*/
+    }
 
     bool is_valid() {
       return true;

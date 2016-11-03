@@ -49,9 +49,11 @@ void Tree_Record_Updater::connect_update(char* new_connect) {
       case AND:
         connector = new And(tree_record->l_child, tree_record->r_child);
         break;
+
       case OR:
         connector = new Or(tree_record->l_child, tree_record->r_child);
         break;
+
       case END:
         std::cout << "placeholder\n";
     }
@@ -106,13 +108,16 @@ Command* Tree_Record_Updater::finalize_record() {
     }
     tree_record->root = connector;
   }
+
+  else if (tree_record->root == NULL)
+    tree_record->root = tree_record->l_child;
+
   return tree_record->root;
 }
 
 void Tree_Record_Updater::reinit_record(int token_size) {
   delete tree_record;
-  tree_record = new Tree_Construct_Record(token_size);
-  
+  tree_record = new Tree_Construct_Record(token_size); 
 }
 
 void Tree_Record_Updater::reset_pend_process_records() {

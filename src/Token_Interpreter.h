@@ -1,6 +1,7 @@
 #ifndef TOKEN_INTERPRETER_H
 #define TOKEN_INTERPRETER_H
 #include <stdexcept>
+#include <stdlib.h>
 #include "Tree_Construct_Record.h"
 
 enum TOKEN_TYPE {COMMENT, CONNECTOR, ARGUMENT, COMMAND};
