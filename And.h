@@ -35,10 +35,21 @@ class And: public Command{
         return false;
     }
   
+   //FIXME: DEBUG print
+   void print() {
+     std::cout << "AND - children:\n";
+     if (this->LHS != NULL)
+       this->LHS->print();
+     if (this->RHS != NULL)
+       this->RHS->print(); 
+     std::cout << std::endl;   
+   }
+
+
 	  // bool success(); // FIXME Is this function still needed?
 	
   private:
-	  Command *my_parent = NULL, *LHS = NULL, *RHS = NULL;
+	  Command *my_parent, *LHS, *RHS;
 };
 
 #endif

@@ -7,7 +7,6 @@ class Or: public Command{
 
   public:
     Or(Command *lhs, Command *rhs){
-    
       this->LHS = lhs;
       this->RHS = rhs;
     }
@@ -21,7 +20,7 @@ class Or: public Command{
           if ( left_success == true )
             LHS->execute();
       
-          else if ( right_success = true )
+          else if ( right_success == true )
             RHS->execute();
         }
       }
@@ -45,11 +44,23 @@ class Or: public Command{
         return false;
     }
   
+   //FIXME: DEBUG print
+   void print() {
+     std::cout << "OR - children:\n";
+     if (this->LHS != NULL)
+       this->LHS->print();
+     if (this->RHS != NULL)
+       this->RHS->print();
+
+     std::cout << std::endl;   
+   }
+
+
 	  // bool success(); // FIXME Is this function still necessary?
 	
   private:
-	  Command *my_parent = NULL, *LHS = NULL, *RHS = NULL;
-	  bool left_success = 0, right_success = 0;
+	  Command *my_parent, *LHS, *RHS;
+	  bool left_success, right_success;
 };
 
 #endif

@@ -7,20 +7,18 @@
 class Line: public Command{
 
   public:
-    Line(){};
-	
-	  void execute(){
-    
-      for (unsigned int i = 0; i < memory.sizeof(); ++i){
-        
+    Line(std::vector<Command*> tree_array) {
+      this->memory = tree_array;
+    }
+    void execute(){ 
+      for (unsigned int i = 0; i < memory.size(); ++i) {
         memory.at(i)->execute();
-        std::cout << std::endl;
       }
     }
-  
+    bool is_valid() { return true; }
+    void print() {}
+    
   private:
-  	vector<Command*> memory;
-	
+    std::vector<Command*> memory;	
 };
-
 #endif
