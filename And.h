@@ -6,50 +6,36 @@
 class And: public Command{
 
   public:
-    And(Command *lhs, Command *rhs){
-    
+    And(Command *lhs, Command *rhs){ 
       this->LHS = lhs;
       this->RHS = rhs;
-    }  // FIXME Only for test values
-  
-	  And(){};
-	
-	  void execute(){
+    }
     
-      if ( this->is_valid() ){
-      
-        if ( my_parent == NULL ){
-          
-          LHS->execute();
-          RHS->execute();
+    void execute(){
+      if (this->is_valid()) {    
+        if ( my_parent == NULL ) {
+          if (this->LHS != NULL)        
+            LHS->execute();
+          if (this->RHS != NULL)
+            RHS->execute();
         } 
       }
     }
   
-    bool is_valid(){
-    
-      if ( LHS->is_valid() && RHS->is_valid() )
-        return true;
-      
-      else
-        return false;
+    bool is_valid(){   
+      if (this->LHS != NULL) {
+        if (this->LHS->is_valid()) {
+          if (this->RHS != NULL) {
+            if (this->RHS->is_valid())
+              return true;
+          }
+        }
+      }
+      return false;
     }
-  
-   //FIXME: DEBUG print
-   void print() {
-     std::cout << "AND - children:\n";
-     if (this->LHS != NULL)
-       this->LHS->print();
-     if (this->RHS != NULL)
-       this->RHS->print(); 
-     std::cout << std::endl;   
-   }
-
-
-	  // bool success(); // FIXME Is this function still needed?
 	
   private:
-	  Command *my_parent, *LHS, *RHS;
+    Command *my_parent, *LHS, *RHS;
 };
 
 #endif

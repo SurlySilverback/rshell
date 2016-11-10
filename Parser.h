@@ -86,15 +86,7 @@ Line* Parser::parse() {
   }
   line.push_back(closure_handler(record_updater)); 
   new_line_object = new Line(line);
-  
-  //FIXME: debug print
-  std::cout << "\nFINAL TREE:\n";
-  if (line.at(0) != NULL) {
-    for (unsigned i = 0; i < line.size(); i++) 
-      line.at(i)->print(); 
-  }
-  else
-    std::cout << "NOTHING ENTERED\n"; 
+
   return new_line_object; 
 }
 
