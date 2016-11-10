@@ -16,27 +16,27 @@ class Process: public Command {
     Process(char* exec_name, char** args) { 
       this-> exec_name = exec_name; 
       this-> args = args;
-    };
+    }
 
     bool is_valid() {
       return true;
     }
 
     void execute() {
+      //prepend exec_name to args, per execvp API
+      this->args = prepend_char_pointer_array();
+
       /*		
       pid_t pid = fork();		
-      
-      if ( pid == -1 ){
+  
+      if ( pid == -1 )
         perror("fork");
-      }
-
       if ( pid == 0  ){
         //child     
         if ( execvp() == -1 )
           perror("exec");
         // child calls evecvp() here with char* and char*[]
-      }
-     
+      }   
       if ( pid > 0 ){
         //parent
         wait(0);    
@@ -45,20 +45,21 @@ class Process: public Command {
       */
     }
 
-   //FIXME: DEBUG print
-   void print() {
-     std::cout << "process name\n";
-     if (this->exec_name != NULL)
-       std::cout << this->exec_name << "\n";
-
-     else 
-       std::cout << "null exec name\n";
+    char** prepend_char_pointer_array() {
+      unsigned array_size = 0;
+      for(unsigned i = 0; this->args[i] != NULL; i++)
+	array_size++;
      
-     std::cout << "args: \n";
-     for(unsigned i = 0; this->args[i] != NULL; i++)  
-       std::cout << args[i] << " "; 
-     std::cout << "done printing args" << std::endl;
-   }
+      char** updated_array = new char*[array_size + 1];
+      updated_array[0] = this->exec_name;
+
+      //copy original array
+      for (unsigned i = 1; this->args[i - 1] != NULL; i++) 
+        updated_array[i] = this->args[i - 1];
+
+      delete [](this->args);
+      return updated_array;
+    }
 };
 	
 #endif
