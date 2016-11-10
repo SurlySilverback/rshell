@@ -6,47 +6,36 @@
 class And: public Command{
 
   public:
-    And(Command *lhs, Command *rhs){
-    
+    And(Command *lhs, Command *rhs){ 
       this->LHS = lhs;
       this->RHS = rhs;
     }
-  
-	  And(){};
-	
-/************************************************************************
- And->execute(): Checks to ensure that its left-hand and right-hand
-     children both return true using is_valid() before calling execute.
-************************************************************************/
-	  void execute(){
     
-      if ( this->is_valid() ){
-        
-        // If I am the top of the tree, I will begin the recursive execute call
-        if ( my_parent == NULL ){
-          
-          LHS->execute();
-          RHS->execute();
+    void execute(){
+      if (this->is_valid()) {    
+        if ( my_parent == NULL ) {
+          if (this->LHS != NULL)        
+            LHS->execute();
+          if (this->RHS != NULL)
+            RHS->execute();
         } 
       }
     }
   
-  
-/************************************************************************
- And->is_valid(): Checks to ensure that its left-hand and right-hand
-     children both return true.
-************************************************************************/
-    bool is_valid(){
-    
-      if ( LHS->is_valid() && RHS->is_valid() )
-        return true;
-      
-      else
-        return false;
+    bool is_valid(){   
+      if (this->LHS != NULL) {
+        if (this->LHS->is_valid()) {
+          if (this->RHS != NULL) {
+            if (this->RHS->is_valid())
+              return true;
+          }
+        }
+      }
+      return false;
     }
 	
   private:
-	  Command *my_parent = NULL, *LHS = NULL, *RHS = NULL;
+    Command *my_parent, *LHS, *RHS;
 };
 
 #endif

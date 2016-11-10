@@ -18,6 +18,7 @@ class Process: public Command {
       this-> args = args;
     }
 
+    // FIXME!!!: will validity be checked with execvp return? 
     bool is_valid() {
       return true;
     }
@@ -26,16 +27,12 @@ class Process: public Command {
       //prepend exec_name to args, per execvp API
       this->args = prepend_char_pointer_array();
 
-<<<<<<< HEAD:Process.h
       /*		
       pid_t pid = fork();		
   
       if ( pid == -1 )
         perror("fork");
-      if ( pid == 0  ){
-=======
-      if ( pid == 0 ){
->>>>>>> hw2:src/Process.h
+      if ( pid == 0  ) {
         //child     
         if ( execvp() == -1 )
           perror("exec");
