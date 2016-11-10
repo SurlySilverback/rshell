@@ -36,12 +36,12 @@ class And: public Command{
     }
   
    //FIXME: DEBUG print
-   void print() {
+   /*void print() {
      std::cout << "connector: AND \nchildren: ";
      this->LHS->print();
      this->RHS->print(); 
      std::cout << std::endl;   
-   }
+   }*/
 
 
 	  // bool success(); // FIXME Is this function still needed?

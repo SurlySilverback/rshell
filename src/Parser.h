@@ -54,7 +54,7 @@ Line* Parser::parse() {
     
     switch(token_interp.token_type(tree_record)) {   
       case COMMENT:
-        std::cout << "COMMENT\n";
+        //std::cout << "COMMENT\n";
         record_updater->finalize_record();
 
         line.push_back(closure_handler(record_updater));
@@ -63,7 +63,7 @@ Line* Parser::parse() {
         break;
       
       case CONNECTOR:
-        std::cout << "CONNECTOR: " << token_vector.at(i) << std::endl; 
+        //std::cout << "CONNECTOR: " << token_vector.at(i) << std::endl; 
         record_updater->connect_update(token_vector.at(i));
    
         if (token_interp.contains_closure_char()) {
@@ -73,7 +73,7 @@ Line* Parser::parse() {
         break;
       
       case COMMAND:
-        std::cout << "COMMAND: " << token_vector.at(i) << std::endl;
+        //std::cout << "COMMAND: " << token_vector.at(i) << std::endl;
         record_updater->process_update(token_vector.at(i)); 
 
         if (token_interp.contains_closure_char()) {
@@ -83,7 +83,7 @@ Line* Parser::parse() {
         break;
       
       case ARGUMENT:
-        std::cout << "ARG: " << token_vector.at(i) << std::endl;
+        //std::cout << "ARG: " << token_vector.at(i) << std::endl;
         record_updater->arg_update(token_vector.at(i));
  
         if (token_interp.contains_closure_char()) {
@@ -96,8 +96,8 @@ Line* Parser::parse() {
   new_line_object = new Line(line);
   
   //FIXME: debug print
-  for (unsigned i = 0; i < line.size(); i++) 
-    line.at(i)->print(); 
+  //for (unsigned i = 0; i < line.size(); i++) 
+    //line.at(i)->print(); 
   
   return new_line_object; 
 }
@@ -116,7 +116,7 @@ std::vector<char*> Parser::tokenize() const {
 }
 
 Command* Parser::closure_handler(Tree_Record_Updater* record_updater) {
-  std::cout << "encountered closure char\n";
+  //std::cout << "encountered closure char\n";
 
   Command* root = record_updater->finalize_record();
   record_updater->reinit_record(token_vector.size());  

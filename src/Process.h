@@ -18,7 +18,7 @@ class Process: public Command {
       // exec_name is the name of the executable
       this-> exec_name = exec_name; 
       this-> args = args; // FIXME: Delete this later and use copy loops
-      /*
+      
       int counter = 1;
       
       for (unsigned i = 0; args[i]!= NULL; ++i)
@@ -30,7 +30,7 @@ class Process: public Command {
       for (unsigned i = 1; i < counter; ++i){
         
         this-> args[i] = args[i];
-      }*/
+      }
     }
 
     bool is_valid() {
@@ -61,7 +61,7 @@ class Process: public Command {
     }
 
    //FIXME: DEBUG print
-   void print() {
+   /*void print() {
      std::cout << "process name\n";
      std::cout << this->exec_name << "\n";
     
@@ -69,7 +69,7 @@ class Process: public Command {
        std::cout << args[i] << " "; 
      }
      std::cout << std::endl;
-   }
+   }*/
 };
 	
 #endif

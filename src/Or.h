@@ -45,13 +45,13 @@ class Or: public Command{
     }
   
    //FIXME: DEBUG print
-   void print() {
+   /*void print() {
      std::cout << "connector: OR \nchildren:\n";
      this->LHS->print();
      this->RHS->print();
 
      std::cout << std::endl;   
-   }
+   }*/
 
 
 	  // bool success(); // FIXME Is this function still necessary?
