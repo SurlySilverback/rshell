@@ -1,0 +1,12 @@
+#single_command_test
+#Test cases (remove all but the one you wish to test)
+#For Null test case, delete file contents
+
+ls
+
+ls -l
+
+echo Hello World
+
+ekko typo_LOL
+
