@@ -4,10 +4,23 @@
 #include "Command.h"
 
 int main() {
-  std::string input = "echo foo && echo bar";
-  std::cout << input << std::endl;
-  Parser foo(input);
-  Line* line = foo.parse();
+
+  do 
+  {
+       std::cout << "$ ";
+
+       std::string input;
+
+       getline(input, cin);
+  
+       Parser foo(input);
+  
+       Line* line = foo.parse();
+
+       std::cout << endl;
+
+  } while ( status != 0 )
+
   return 0;
 }
 
