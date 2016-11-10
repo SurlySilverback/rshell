@@ -10,7 +10,12 @@ class Or: public Command{
       this->LHS = lhs;
       this->RHS = rhs;
     }
-	
+
+/************************************************************************
+ Or->execute(): Checks to ensure that either its left-hand or right-hand
+     child returns true using is_valid() before calling execute on the
+     child that returned successful.
+************************************************************************/
     void execute(){
       
       if ( this->is_valid() ){
@@ -26,6 +31,10 @@ class Or: public Command{
       }
     }
   
+/************************************************************************
+ Or->is_valid(): Checks to ensure that either its left-hand or right-hand
+     child returns true.
+************************************************************************/
     bool is_valid(){
     
       if ( LHS->is_valid() ){
