@@ -8,6 +8,7 @@ int main() {
   std::cout << input << std::endl;
   Parser foo(input);
   Line* line = foo.parse();
+  line->execute();
   return 0;
 }
 

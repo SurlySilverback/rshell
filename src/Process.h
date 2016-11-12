@@ -26,24 +26,23 @@ class Process: public Command {
     void execute() {
       //prepend exec_name to args, per execvp API
       this->args = prepend_char_pointer_array();
-
-      /*		
+		
       pid_t pid = fork();		
-  
-      if ( pid == -1 )
-        perror("fork");
-      if ( pid == 0  ) {
-        //child     
-        if ( execvp() == -1 )
-          perror("exec");
-        // child calls evecvp() here with char* and char*[]
-      }   
-      if ( pid > 0 ){
-        //parent
-        wait(0);    
-        // FIXME Parent should monitor child's running status
+      //failure
+      if (pid == -1)
+        perror("fork\n");
+
+      //pid is child
+      if (pid == 0) {    
+        if (execvp(exec_name, args) == -1)
+          perror("exec\n");
       }
-      */
+
+      //pid parent   
+      if (pid > 0) {
+        wait(0);    
+        //FIXME Parent should monitor child's running status
+      }
     }
 
     char** prepend_char_pointer_array() {
