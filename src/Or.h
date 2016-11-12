@@ -8,38 +8,23 @@ class Or: public Command {
     Or(Command *lhs, Command *rhs) {
       this->LHS = lhs;
       this->RHS = rhs;
-      this->left_success = false;
     }
-	
-    void execute() {
-      if (this->is_valid()) {
-        if (my_parent == NULL) {
-          if (left_success)
-            LHS->execute(); 
-          else
-            RHS->execute();
-        }
+
+    //NOTE: currently, 'true' is returned if there exists one child which properly executes.	
+    //      Should this unconditionally return 'false' if there is only one child?
+    //      in the actual shell, execution hangs if a connector is missing a child
+    bool execute() {
+      if (this->LHS != NULL) {
+        if (this->LHS->execute())
+          return true; 
       }
+      else if (this->RHS != NULL)
+        return this->RHS->execute();
+      return false;
     }
- 
-    bool is_valid() {
-      if (this->LHS != NULL) {  
-        if (LHS->is_valid()) {
-          this->left_success = true;
-          return true;
-        }
-      }
- 
-      else if (this->RHS != NULL) {
-        if (this->RHS->is_valid())
-          return true;
-      }
-      return false;  
-    }
-	
+
   private:
-    Command *my_parent, *LHS, *RHS;
-    bool left_success;
+    Command *LHS, *RHS;
 };
 
 #endif

@@ -11,31 +11,19 @@ class And: public Command{
       this->RHS = rhs;
     }
     
-    void execute(){
-      if (this->is_valid()) {    
-        if ( my_parent == NULL ) {
-          if (this->LHS != NULL)        
-            LHS->execute();
+    //only returns true if there are two children, and both execute properly
+    bool execute(){
+      if (this->LHS != NULL)        
+        if (this->LHS->execute()) {
           if (this->RHS != NULL)
-            RHS->execute();
-        } 
-      }
-    }
-  
-    bool is_valid(){   
-      if (this->LHS != NULL) {
-        if (this->LHS->is_valid()) {
-          if (this->RHS != NULL) {
-            if (this->RHS->is_valid())
-              return true;
-          }
-        }
+            return this->RHS->execute(); 
+        }   
       }
       return false;
     }
-	
+  	
   private:
-    Command *my_parent, *LHS, *RHS;
+    Command *LHS, *RHS;
 };
 
 #endif
