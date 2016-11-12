@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <iostream>
 #include "Command.h"
 
@@ -19,14 +20,7 @@ class Process: public Command {
       this-> args = args;
     }
 
- 
-    bool is_valid() 
-    {
-      return true;
-    }
-
-
-    void execute() 
+    bool execute() 
     {
       //prepend exec_name to args, per execvp API
       this->args = prepend_char_pointer_array();
@@ -41,13 +35,18 @@ class Process: public Command {
           //child     
           if ( execvp( this->exec_name, this->args ) == -1 )
               perror("exec");
+        
+          else
+            return true;
       }   
       
       if ( pid > 0 )
       {
           //parent
-          wait(0);    
+          wait(0);
      }
+      
+      return true;
     }
 
     char** prepend_char_pointer_array() {

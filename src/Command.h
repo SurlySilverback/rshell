@@ -6,8 +6,7 @@ class Command{
   public:
     Command(){};
   
-    virtual void execute() = 0;
-    virtual bool is_valid() = 0;	
+    virtual bool execute() = 0;
 };
 
 #endif

@@ -1,6 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include <string>
+#include <string.h>
 #include <vector>
 #include <iostream>
 #include "Tree_Construct_Record.h"
@@ -23,8 +23,18 @@ class Parser {
 };
 
 Parser::Parser(std::string input_line) {
+  // FIXME: Test cout
+  //std::cout << "Parser Constructor: the input_line arg is " << input_line << std::endl;
   this->input_line = string_to_char(input_line);
   this->token_vector = tokenize();
+  
+  // FIXME: Test cout
+  //std::cout << "Parser Constructor: after tokenize, token vector is ";
+  for (unsigned i = 0; i < token_vector.size(); ++i){
+  
+      std::cout << token_vector[i];
+  }
+  std::cout << std::endl;
 }
 
 char* Parser::string_to_char(std::string input_line) const {
@@ -32,6 +42,15 @@ char* Parser::string_to_char(std::string input_line) const {
   char* converted_string = new char[input_line.size() + 1];
   
   strcpy(converted_string, input_line.c_str());
+  
+  // FIXME: Test cout
+  //std::cout << "Parser-> string_to_char(): the input_line arg is " << input_line << std::endl;
+  //std::cout << "Parser-> string_to_char(): converted_string is ";
+  for (char *test_p = converted_string; *test_p != '\0' ; ++test_p)
+      std::cout << *test_p;
+  
+  std::cout << std::endl;
+  
   return converted_string;
 }
 
@@ -100,11 +119,12 @@ std::vector<char*> Parser::tokenize() const {
     token_vector.push_back(current_token);
     current_token = strtok(NULL, " ");
   }    
+  
   return token_vector; 
 }
 
 Command* Parser::closure_handler(Tree_Record_Updater* record_updater) {
-  std::cout << "handling closure\n";
+  //std::cout << "handling closure\n";
 
   Command* root = record_updater->finalize_record();
   record_updater->reinit_record(token_vector.size());  

@@ -4,21 +4,26 @@
 #include "Command.h"
 
 int main() {
+  
+  int status = 0;
+  
   do 
   {
-       std::cout << "$ ";
+       //std::cout << "$ ";
 
-       std::string input;
+       std::string input = "echo foo && echo bar && ls";
 
-       getline(input, cin);
+       //getline(input, std::cin);
   
        Parser foo(input);
   
        Line* line = foo.parse();
+    
+       status = line->execute();
 
-       std::cout << endl;
+       std::cout << std::endl;
 
-  } while ( status != 0 )
+  } while ( status != 1 );
 
  return 0;
 }

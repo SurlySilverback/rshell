@@ -8,14 +8,18 @@ class Line: public Command{
   public:
     Line(std::vector<Command*> tree_array) {
       this->process_trees = tree_array;
+      
+      // FIXME: Test cout
+      //std::cout << "Line Constructor: done building Line " << std::endl;
     }
 
-    void execute(){ 
+    bool execute()
+    { 
       for (unsigned int i = 0; i < process_trees.size(); ++i)
-        process_trees.at(i)->execute();
+          process_trees.at(i)->execute();
+      
+      return true;
     }
-
-    bool is_valid() { return true; }
     
   private:
     std::vector<Command*> process_trees;	

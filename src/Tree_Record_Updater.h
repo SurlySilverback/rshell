@@ -117,7 +117,7 @@ Command* Tree_Record_Updater::finalize_record() {
     tree_record->l_child = NULL;
   }
 
-  std::cout << "record finalized\n";
+  //std::cout << "record finalized\n";
   return tree_record->root;
 }
 

@@ -13,12 +13,14 @@ class And: public Command{
     
     //only returns true if there are two children, and both execute properly
     bool execute(){
-      if (this->LHS != NULL)        
-        if (this->LHS->execute()) {
+      if (this->LHS != NULL)
+      
+        if (this->LHS->execute())
+          
           if (this->RHS != NULL)
+          
             return this->RHS->execute(); 
-        }   
-      }
+      
       return false;
     }
   	
