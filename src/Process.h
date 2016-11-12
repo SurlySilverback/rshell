@@ -13,36 +13,41 @@ class Process: public Command {
     char** args;
 
   public:
-    Process(char* exec_name, char** args) { 
+    Process(char* exec_name, char** args) 
+    { 
       this-> exec_name = exec_name; 
       this-> args = args;
     }
 
-    // FIXME!!!: will validity be checked with execvp return? 
-    bool is_valid() {
+ 
+    bool is_valid() 
+    {
       return true;
     }
 
-    void execute() {
+
+    void execute() 
+    {
       //prepend exec_name to args, per execvp API
       this->args = prepend_char_pointer_array();
 		
       pid_t pid = fork();		
-      //failure
-      if (pid == -1)
-        perror("fork\n");
-
-      //pid is child
-      if (pid == 0) {    
-        if (execvp(exec_name, args) == -1)
-          perror("exec\n");
-      }
-
-      //pid parent   
-      if (pid > 0) {
-        wait(0);    
-        //FIXME Parent should monitor child's running status
-      }
+ 
+      if ( pid == -1 )
+          perror("fork");
+      
+      if ( pid == 0 ) 
+      {
+          //child     
+          if ( execvp( this->exec_name, this->args ) == -1 )
+              perror("exec");
+      }   
+      
+      if ( pid > 0 )
+      {
+          //parent
+          wait(0);    
+     }
     }
 
     char** prepend_char_pointer_array() {
