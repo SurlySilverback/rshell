@@ -1,28 +1,44 @@
-objects = main.o and.o line.o or.o parser.o tree_construct_record.o \
-          token_interpreter.o tree_record_updater.o process.o
+CC = g++
 
-VPATH = src
+CFLAGS = -Wall -Werror -ansi -pedantic
 
-all : $(objects)
-	mkdir -p bin
-	cc -Wall -Werror -ansi -pedantic all $(objects)
+
+all :
+	mkdir -p ./bin
+	$(CC) $(CFLAGS) ./src/main.cpp -o ./bin/rshell
+
+main :
+	$(CC) $(CFLAGS) ./src/main.cpp
 	
-rshell : $(objects)
-	mkdir -p bin
-	cc -Wall -Werror -ansi -pedantic rshell $(objects)
+Command :
+	$(CC) $(CFLAGS) ./src/Command.h
 
-main.o : command.h and.h or.h process.h
-and.o : command.h
-line.o : command.h
-or.o : command.h
-parser.o : tree_construct_record.h token_interpreter.h \ 
-           tree_record_updater.h process.h
-process.o : command.h
-tree_construct_record.o : 
-token_interpreter.o : tree_construct_record.h
-tree_record_updater.o : tree_construct_record.h token_interpreter.h \
-                        process.h and.h or.h
+And :
+	$(CC) $(CFLAGS) ./src/And.h
+
+Or :
+	$(CC) $(CFLAGS) ./src/Or.h
+
+Line :
+	$(CC) $(CFLAGS) ./src/Line.h
+	
+Parser :
+	$(CC) $(CFLAGS) ./src/Parser.h
+
+Token_Interpreter :
+	$(CC) $(CFLAGS) ./src/Token_Interpreter.h
+	
+Tree_Construct_Record :
+	$(CC) $(CFLAGS) ./src/Tree_Construct_Record.h
+	
+Tree_Record_Updater :
+	$(CC) $(CFLAGS) ./src/Tree_Record_Updater.h
+
+Process :
+	$(CC) $(CFLAGS) ./src/Process.h
+
+
 
 .PHONY : clean
 clean :
-	-rm rshell $(objects)
+	rm -rf ./bin

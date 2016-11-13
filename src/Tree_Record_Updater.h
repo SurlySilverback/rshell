@@ -106,12 +106,18 @@ Command* Tree_Record_Updater::finalize_record() {
       case END:
         std::cout << "placeholder\n";
     }
+    tree_record->l_child = connector;
+    tree_record->r_child = NULL;
+    tree_record->pend_connect_init = false;
     tree_record->root = connector;
   }
 
-  else if (tree_record->root == NULL)
+  else if (tree_record->root == NULL) {
     tree_record->root = tree_record->l_child;
+    tree_record->l_child = NULL;
+  }
 
+  //std::cout << "record finalized\n";
   return tree_record->root;
 }
 
@@ -125,7 +131,7 @@ void Tree_Record_Updater::reset_pend_process_records() {
   tree_record->pend_process_args = new char*[tree_record->arg_array_size];
   tree_record->pend_arg_num = 0;
   
-  for (unsigned i = 0; i < tree_record->arg_array_size; i++)
+  for (int i = 0; i < tree_record->arg_array_size; i++)
     tree_record->pend_process_args[i] = NULL;
 }
 #endif
