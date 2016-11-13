@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "Command.h"
+#include <string.h>
 
 class Process: public Command {
   private:
@@ -24,15 +25,23 @@ class Process: public Command {
     {
       //prepend exec_name to args, per execvp API
       this->args = prepend_char_pointer_array();
-		
+		  
+      // Check for exit command
+      std::string exitString("exit");
+      if ( this->exec_name == exitString )
+      {
+          exit(0);  
+      }
+      
       pid_t pid = fork();		
  
       if ( pid == -1 )
           perror("fork");
       
       if ( pid == 0 ) 
-      {
-          //child     
+      {    
+          //child
+        
           if ( execvp( this->exec_name, this->args ) == -1 )
               perror("exec");
         

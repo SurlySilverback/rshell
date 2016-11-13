@@ -111,7 +111,5 @@ void Token_Interpreter::filter_closure_char() {
     i--;
   this->token[i] = '\0';
 
-  //FIXME: debug print
-  std::cout << "closure char was filtered, token now: " << this->token << std::endl;
 }
 #endif
