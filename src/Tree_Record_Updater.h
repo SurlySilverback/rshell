@@ -55,7 +55,7 @@ void Tree_Record_Updater::connect_update(char* new_connect) {
         break;
 
       case END:
-        std::cout << "placeholder\n";
+        break;
     }
     tree_record->l_child = connector;
     tree_record->r_child = NULL;
@@ -104,8 +104,9 @@ Command* Tree_Record_Updater::finalize_record() {
         connector = new Or(tree_record->l_child, tree_record->r_child);
         break;
       case END:
-        std::cout << "placeholder\n";
+        break;
     }
+
     tree_record->l_child = connector;
     tree_record->r_child = NULL;
     tree_record->pend_connect_init = false;
@@ -117,7 +118,6 @@ Command* Tree_Record_Updater::finalize_record() {
     tree_record->l_child = NULL;
   }
 
-  //std::cout << "record finalized\n";
   return tree_record->root;
 }
 

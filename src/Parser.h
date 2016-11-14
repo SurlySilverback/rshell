@@ -30,11 +30,8 @@ Parser::Parser(std::string input_line) {
 char* Parser::string_to_char(std::string input_line) const {
   //extra index for \0 to terminate string
   char* converted_string = new char[input_line.size() + 1];
-  
-  strcpy(converted_string, input_line.c_str());
-  
-  std::cout << std::endl;
-  
+  strcpy(converted_string, input_line.c_str());  
+
   return converted_string;
 }
 
