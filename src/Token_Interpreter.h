@@ -4,12 +4,13 @@
 #include <cstdlib>
 #include "Tree_Construct_Record.h"
 
-enum TOKEN_TYPE {COMMENT, CONNECTOR, ARGUMENT, COMMAND};
-#define COMMENT_CHAR '#'
+enum TOKEN_TYPE {COMMENT, CONNECTOR, ARGUMENT, COMMAND, PRECEDE_CHAR, TEST_TEXT, TEST_SYMB};
 
+//NOTES:
+//  -definition guard because also defined in Tree_Construct_Record.h
+//  -strings in CONNECTORS array must correspond with their respective enumerated int values
 #ifndef CONNECTOR_TYPES
 #define CONNECTOR_TYPES
-//NOTE: connectors in the array and set need to have matching order
 #define CONNECTOR_NUM 3
 static const std::string CONNECTORS[CONNECTOR_NUM] = {"&&", "||", ";"};
 enum CONNECT_TYPE {AND, OR, END};
@@ -29,7 +30,12 @@ class Token_Interpreter {
     bool         is_comment() const;
     bool         is_connector() const;
     void         filter_closure_char();
- };
+    
+    //NEW for assn3
+    bool         is_precede_char() const;
+    bool         is_test() const; 
+    TOKEN_TYPE   test_type() const;
+};
 
 Token_Interpreter::Token_Interpreter(char* token) {
   this->token = token;
@@ -48,6 +54,10 @@ TOKEN_TYPE Token_Interpreter::token_type(Tree_Construct_Record* record) const {
     return COMMENT;
   else if (is_connector())
     return CONNECTOR;
+  else if (is_precede_char())
+    return PRECEDE_CHAR;
+  else if (is_test())
+    return test_type();
   else if (record->pend_process_init)
     return ARGUMENT;
   else
@@ -64,7 +74,7 @@ bool Token_Interpreter::contains_closure_char() const {
     unsigned i;
     //get index of last char
     for (i = 0; this->token[i] != '\0'; i++) {}
-      i--;
+    i--;
 
     if (this->token[i] == ';')
       return true;
@@ -85,13 +95,10 @@ CONNECT_TYPE Token_Interpreter::connect_type() const {
   exit(1); 
 }
 
-
 bool Token_Interpreter::is_comment() const {
-  unsigned i = 0;
-  while (this->token[i] != '\0') {
-    if (this->token[i] == COMMENT_CHAR)
+  for (unsigned i = 0; this->token[i] != '\0'; i++) {
+    if (this->token[i] == '#')
       return true;
-    i++;
   }
   return false;
 }
@@ -104,12 +111,45 @@ bool Token_Interpreter::is_connector() const {
   return false;
 }
 
+//get index of last char (the closure that will be filtered) and replace with null char
 void Token_Interpreter::filter_closure_char() {
   unsigned i;
-  //get index of last char
   for (i = 0; this->token[i] != '\0'; i++) {}
-    i--;
-  this->token[i] = '\0';
+  i--;
 
+  this->token[i] = '\0';
+}
+
+bool Token_Interpreter::is_precede_char() const {
+  for (unsigned i = 0; this->token[i] != '\0'; i++) {
+    if (this->token[i] == '(' || this->token[i] == ')')
+      return true;
+  }
+  return false;
+}
+
+bool Token_Interpreter::is_test() const {
+  unsigned i = 0;
+  while(this->token[i] != '\0')
+    i++;
+  i--;
+
+  if (static_cast<std::string>(this->token) == "test" || 
+      static_cast<std::string>(this->token) == "[" || 
+      this->token[0] == '[' || 
+      static_cast<std::string>(this->token) == "]" ||
+      this->token[i] == ']') 
+  { return true; }  
+
+  return false;
+}
+
+TOKEN_TYPE Token_Interpreter::test_type() const {
+  if (static_cast<std::string>(this->token) == "test") {
+    std::cout << "was text explicit test\n";
+    return TEST_TEXT;
+  }
+  std::cout << "was symbolic text\n";
+  return TEST_SYMB;
 }
 #endif
