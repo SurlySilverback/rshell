@@ -18,9 +18,9 @@ class Line: public Command{
             {
                 return false;
             }
-      
-            return true;
         }
+
+        return true;
     }
     
   private:
