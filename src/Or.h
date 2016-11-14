@@ -13,22 +13,17 @@ class Or: public Command {
     //NOTE: currently, 'true' is returned if there exists one child which properly executes.	
     //      Should this unconditionally return 'false' if there is only one child?
     //      in the actual shell, execution hangs if a connector is missing a child
-    bool execute() 
-    {  
-        if (this->LHS != NULL)
-        {  
-            if (this->LHS->execute())
-            {  
-                return true; 
-            }
-        }
+    bool execute() {
+      
+      if (this->LHS != NULL) { 
+        if (this->LHS->execute())
+          return true; 
+      }
 
-        else if (this->RHS != NULL)
-        {  
-            return this->RHS->execute();
-        }
+      else if (this->RHS != NULL)
+        return this->RHS->execute();
 
-        return false;
+      return false;
     }
 
   private:
