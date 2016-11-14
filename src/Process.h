@@ -27,10 +27,16 @@ class Process: public Command {
       this->args = prepend_char_pointer_array();
 		  
       // Check for exit command
+      // FIXME: We want to have a proper exit status passed back up to main()
+      // Fix this so that we don't need to do an ugly string comparison to hard exit
+      // out of the process.
+      // Within Line::execute()
+      // for i = 1 to tree_record.size()
+      // if ( !tree_record.at(i)->execute) return false;
       std::string exitString("exit");
       if ( this->exec_name == exitString )
       {
-          exit(0);  
+          exit(1);  
       }
       
       pid_t pid = fork();		

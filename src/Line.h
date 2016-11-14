@@ -12,13 +12,18 @@ class Line: public Command{
 
     bool execute()
     { 
-      for (unsigned int i = 0; i < process_trees.size(); ++i)
-          process_trees.at(i)->execute();
+        for (unsigned int i = 0; i < process_trees.size(); ++i)
+        {    
+            if ( !process_trees.at(i)->execute() )
+            {
+                return false;
+            }
       
-      return true;
+            return true;
+        }
     }
     
   private:
-    std::vector<Command*> process_trees;	
+      std::vector<Command*> process_trees;	
 };
 #endif
