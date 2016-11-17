@@ -21,28 +21,7 @@ static const std::string CONNECTORS[CONNECTOR_NUM] = {"&&", "||", ";"};
 enum CONNECT_TYPE {AND, OR, END};
 #endif
 
-struct Tree_Construct_Record {
-  Tree_Construct_Record(int arg_array_size): 
-    root(NULL), 
-    l_child(NULL), 
-    r_child(NULL),
-    pend_connect_init(false),
-    pend_process_init(false),  
-    pend_process_name(NULL), 
-    pend_connect_type(NULL),
-    pend_arg_num(0),
-    arg_array_size(arg_array_size),
-    pend_args(new char*[arg_array_size]),
-
-    //New for assn3
-    pend_test_init(false),
-    pend_preced_op(false) 
-  {
-    //since NULL-checks are used, set every element
-    for (unsigned i = 0; i < this->arg_array_size; i++)
-      this->pend_args[i] = NULL;
-  };
-
+struct Tree_Construct_Record {  
   Command*      root;
   Command*      l_child;  
   Command*      r_child;    
@@ -59,6 +38,33 @@ struct Tree_Construct_Record {
 
   //New for assn3
   bool pend_test_init;
-  bool pend_preced_op;  
+  bool pend_preced_op;
+  Tree_Construct_Record* child_record; 
+
+  Tree_Construct_Record(int arg_array_size): 
+    root(NULL), 
+    l_child(NULL), 
+    r_child(NULL),
+    pend_connect_init(false),
+    pend_process_init(false),  
+    pend_process_name(NULL), 
+    pend_connect_type(NULL),
+    pend_arg_num(0),
+    arg_array_size(arg_array_size),
+    pend_args(new char*[arg_array_size]),
+
+    //New for assn3
+    pend_test_init(false),
+    pend_preced_op(false), 
+    child_record(NULL)
+  {
+    //since NULL-checks are used, set every element
+    for (unsigned i = 0; i < this->arg_array_size; i++)
+      this->pend_args[i] = NULL;
+  };
+
+  ~Tree_Construct_Record() {
+    delete this->pend_connect_type;
+  }
 };
 #endif

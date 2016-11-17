@@ -13,6 +13,12 @@ class TestProcess : public Command {
         char* path;
 
     public:
+        TestProcess(char* path) 
+        {
+            std::string default_flag = "-e";
+            strcpy(this->flag, default_flag.c_str());
+            this->path = path;
+        }
 
         TestProcess(char* flag, char* path)
         {
@@ -20,55 +26,53 @@ class TestProcess : public Command {
             this->path = path;
         }
 
-
         bool execute()
         {
             struct stat statbuf;
+            if (static_cast<std::string>(this->flag) == "-d") {
+                if ( stat( path, &statbuf ) != -1 )
+                {    
+                    if ( S_ISDIR( statbuf.st_mode ) == true )
+                    {
+                        std::cout << "(True)" << std::endl;
+			return true;
+                    }
+                    else
+	            {
+                        std::cout << "(False)" << std::endl;
+			return false;
+	            }
+		}
+                return false;
+            }
 
-            switch(flag)
-            {
-                case "-d":
-                    if ( stat( path, &statbuf ) != -1 )
-                    {    
-                        if ( S_ISDIR( statbuf.st_mode ) == true )
-			{
-                            std::cout << "(True)" << std::endl;
-			    return true;
-              		}
-                        else
-			{
-                            std::cout << "(False)" << std::endl;
-			    return false;
-			}
-		    }
-                break;
-
-                case "-f":
-                    if ( stat( path, &statbuf ) != -1 )
+            else if (static_cast<std::string>(this->flag) == "-f") {
+                if ( stat( path, &statbuf ) != -1 )
+		{
+                    if ( S_ISREG( statbuf.st_mode ) == true )
+	            {
+                        std::cout << "(True)" << std::endl;
+			return true;
+	            }
+                    else
 		    {
-                        if ( S_ISREG( statbuf.st_mode ) == true )
-			{
-                            std::cout << "(True)" << std::endl;
-			    return true;
-			}
-                        else
-			{
-			    std::cout << "(False)" << std::endl;
-			    return false;
-			}
+	                std::cout << "(False)" << std::endl;
+			return false;
 		    }
-		break;
-
-		default:
-		    if ( stat( path, &statbuf ) != -1 )
-		    {
-			std::cout << "(True)" << std::endl;
-		        return true;
-		    }
-		    else
-		    {
-			std::cout << "(False)" << std::endl;
-		    }
+		}
+                return false;
+	    }
+            else {
+                if ( stat( path, &statbuf ) != -1 )
+		{
+	            std::cout << "(True)" << std::endl;
+		    return true;
+		}
+		else
+		{
+	            std::cout << "(False)" << std::endl;
+                    return false;
+		}
 	    }
         }
 };
