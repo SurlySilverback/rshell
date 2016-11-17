@@ -1,10 +1,16 @@
+//*****************
+//TOKEN_INTERPRETER
+//*****************
+// -methods used throughout each parse cycle to get information about token
+// -one interpreter per token
+
 #ifndef TOKEN_INTERPRETER_H
 #define TOKEN_INTERPRETER_H
 #include <stdexcept>
 #include <cstdlib>
 #include "Tree_Construct_Record.h"
 
-enum TOKEN_TYPE {COMMENT, CONNECTOR, ARGUMENT, COMMAND, PRECEDE_CHAR, TEST_TEXT, TEST_SYMB};
+enum TOKEN_TYPE {COMMENT, CONNECTOR, ARGUMENT, COMMAND, PRECEDE_CHAR, TEST};
 
 //NOTES:
 //  -definition guard because also defined in Tree_Construct_Record.h
@@ -57,8 +63,12 @@ TOKEN_TYPE Token_Interpreter::token_type(Tree_Construct_Record* record) const {
   else if (is_precede_char())
     return PRECEDE_CHAR;
   else if (is_test())
-    return test_type();
-  else if (record->pend_process_init)
+    return TEST;
+
+  //NOTE: while comments, connectors, tests, and precedence chars are uniquely identifiable,
+  //      arguments and commands are discovered when tokens aren't any of the aforementioned types,
+  //      based on whether or there are any pending processes/tests
+  else if (record->pend_process_init || record->pend_test_init)
     return ARGUMENT;
   else
     return COMMAND;
@@ -121,14 +131,23 @@ void Token_Interpreter::filter_closure_char() {
 }
 
 bool Token_Interpreter::is_precede_char() const {
-  for (unsigned i = 0; this->token[i] != '\0'; i++) {
-    if (this->token[i] == '(' || this->token[i] == ')')
-      return true;
-  }
+  //get index of last char
+  unsigned i = 0;
+  while(this->token[i] != '\0')
+    i++;
+  i--;
+
+  if (static_cast<std::string>(this->token) == "(" || 
+      static_cast<std::string>(this->token) == "_" || 
+      this->token[0] == '(' || 
+      static_cast<std::string>(this->token) == "]" ||
+      this->token[i] == ')') 
+    { return true; }    
   return false;
 }
 
 bool Token_Interpreter::is_test() const {
+  //get index of last char
   unsigned i = 0;
   while(this->token[i] != '\0')
     i++;
@@ -142,14 +161,5 @@ bool Token_Interpreter::is_test() const {
   { return true; }  
 
   return false;
-}
-
-TOKEN_TYPE Token_Interpreter::test_type() const {
-  if (static_cast<std::string>(this->token) == "test") {
-    std::cout << "was text explicit test\n";
-    return TEST_TEXT;
-  }
-  std::cout << "was symbolic text\n";
-  return TEST_SYMB;
 }
 #endif

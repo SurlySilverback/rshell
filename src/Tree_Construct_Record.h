@@ -1,3 +1,11 @@
+//*********************
+//TREE_CONSTRUCT_RECORD
+//*********************
+// -tracks all objects pending initialization and their arguments
+// -pointers to the tree being built for the current line
+// -can simply be referenced by any object used for parsing and tree construction
+//  so that the respective object can act according to the state of the tree  
+
 #ifndef TREE_CONSTRUCT_RECORD_H
 #define TREE_CONSTRUCT_RECORD_H
 #include <stddef.h>
@@ -24,10 +32,16 @@ struct Tree_Construct_Record {
     pend_connect_type(NULL),
     pend_arg_num(0),
     arg_array_size(arg_array_size),
-    pend_process_args(new char*[arg_array_size])
-  {};
+    pend_args(new char*[arg_array_size]),
 
-  ~Tree_Construct_Record() {}
+    //New for assn3
+    pend_test_init(false),
+    pend_preced_op(false) 
+  {
+    //since NULL-checks are used, set every element
+    for (unsigned i = 0; i < this->arg_array_size; i++)
+      this->pend_args[i] = NULL;
+  };
 
   Command*      root;
   Command*      l_child;  
@@ -41,6 +55,10 @@ struct Tree_Construct_Record {
 
   unsigned      pend_arg_num;
   int           arg_array_size;
-  char**        pend_process_args;
+  char**        pend_args;
+
+  //New for assn3
+  bool pend_test_init;
+  bool pend_preced_op;  
 };
 #endif

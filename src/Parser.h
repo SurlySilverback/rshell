@@ -42,10 +42,6 @@ Line* Parser::parse() {
   //these singletons keep track of tree states and perform transitions
   Tree_Construct_Record* tree_record    = new Tree_Construct_Record(token_vector.size()); 
   Tree_Record_Updater*   record_updater = new Tree_Record_Updater(tree_record);
-
-  //since NULL-checks are used, set every element
-  for (unsigned i = 0; i < tree_record->arg_array_size; i++)
-    tree_record->pend_process_args[i] = NULL;
   
   //primary loop
   for (unsigned i = 0; i < token_vector.size(); i++) {
@@ -54,39 +50,38 @@ Line* Parser::parse() {
     switch(token_interp.token_type(tree_record)) {             // 2.) invoke respective updater method based on type of token
       case COMMENT:
         record_updater->finalize_record();
-
         i = token_vector.size(); // terminate primary loop
         break;
       
       case CONNECTOR:
-        record_updater->connect_update(token_vector.at(i));
-   
+        record_updater->connect_update(token_vector.at(i));  
         if (token_interp.contains_closure_char())              // 3.) check for closure char; if found, finalize record and push tree root to line
           line.push_back(closure_handler(record_updater));  
         break;
       
       case COMMAND:
         record_updater->process_update(token_vector.at(i)); 
-
         if (token_interp.contains_closure_char())
           line.push_back(closure_handler(record_updater));          
         break;
       
       case ARGUMENT:
         record_updater->arg_update(token_vector.at(i));
- 
         if (token_interp.contains_closure_char())
           line.push_back(closure_handler(record_updater)); 
+        break;
 
+      //FIXME: new cases
+      case TEST:
+        record_updater->test_update();
+        break;
       case PRECEDE_CHAR:
         break;
-      case TEST_TEXT:
-        break;
-      case TEST_SYMB:
-        break;  
     }
   }
-  line.push_back(closure_handler(record_updater)); // FIXME: what if this closure_handler call was immediately preceded by another one? 
+
+  //FIXME: what if this closure_handler call was immediately preceded by another one? 
+  line.push_back(closure_handler(record_updater)); 
   current_line = new Line(line);
 
   return current_line; 
