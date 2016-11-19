@@ -5,7 +5,7 @@
 
 class Or: public Command {
   public:
-    Or(Command *lhs, Command *rhs) {
+    Or(Command *lhs = NULL, Command *rhs = NULL) {
       this->LHS = lhs;
       this->RHS = rhs;
     }
@@ -20,7 +20,7 @@ class Or: public Command {
           return true; 
       }
 
-      else if (this->RHS != NULL)
+      if (this->RHS != NULL)
         return this->RHS->execute();
 
       return false;

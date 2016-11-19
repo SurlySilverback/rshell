@@ -15,7 +15,7 @@ class Process: public Command {
     char** args;
 
   public:
-    Process(char* exec_name, char** args) 
+    Process(char* exec_name = NULL, char** args = NULL) 
     { 
       this-> exec_name = exec_name; 
       this-> args = args;
@@ -44,12 +44,12 @@ class Process: public Command {
           perror("fork");
       
       if ( pid == 0 ) 
-      {    
-          //child
-        
-          if ( execvp( this->exec_name, this->args ) == -1 )
+      {     
+          if ( execvp( this->exec_name, this->args ) == -1 ) {
               perror("exec");
-        
+              return false;
+          }
+
           else
             return true;
       }   
@@ -58,7 +58,7 @@ class Process: public Command {
       {
           //parent
           wait(0);
-     }
+      }
       
       return true;
     }

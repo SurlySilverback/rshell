@@ -6,7 +6,7 @@
 class And: public Command{
 
   public:
-    And(Command *lhs, Command *rhs){ 
+    And(Command *lhs = NULL, Command *rhs = NULL){ 
       this->LHS = lhs;
       this->RHS = rhs;
     }
