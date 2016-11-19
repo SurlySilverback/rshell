@@ -25,7 +25,6 @@ class Process: public Command {
     {
       //prepend exec_name to args, per execvp API
       this->args = prepend_char_pointer_array();
-		  
       // Check for exit command
       // FIXME: We want to have a proper exit status passed back up to main()
       // Fix this so that we don't need to do an ugly string comparison to hard exit
@@ -69,17 +68,28 @@ class Process: public Command {
       for(unsigned i = 0; this->args[i] != NULL; i++)
 	array_size++;
      
-      char** updated_array = new char*[array_size + 1];
+      char** updated_array = new char*[array_size + 2];
+      //setting all the null first, because null checks for control later on
+      for (int i = 0; i < (array_size + 2); i++)
+        updated_array[i] = NULL;
+
       updated_array[0] = this->exec_name;
 
       //copy original array
       for (unsigned i = 1; this->args[i - 1] != NULL; i++) 
         updated_array[i] = this->args[i - 1];
-
+ 
       delete [](this->args);
       return updated_array;
     }
     
+    void print() {
+      this->args = prepend_char_pointer_array();
+      std::cout << "process " << this->exec_name << " with args: \n";
+      for (unsigned i = 0; this->args[i] != NULL; i++)
+        std::cout << this->args[i] << " ";
+      std::cout << std::endl << std::endl;
+    }
 };
 	
 #endif
