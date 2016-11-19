@@ -230,7 +230,7 @@ void Tree_Record_Updater::reset_pend_process_records() {
   record_to_update->pend_args = new char*[tree_record->arg_array_size];
   record_to_update->pend_arg_num = 0;
    
-  for (unsigned i = 0; i < record_to_update->arg_array_size; i++)
+  for (int i = 0; i < record_to_update->arg_array_size; i++)
     record_to_update->pend_args[i] = NULL;
 }
 
