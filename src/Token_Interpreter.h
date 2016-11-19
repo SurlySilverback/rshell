@@ -41,7 +41,7 @@ class Token_Interpreter {
     
     //NEW for assn3
     bool         is_precede_char();
-    bool         is_test() const;
+    bool         is_test(Tree_Construct_Record*) const;
 };
 
 Token_Interpreter::Token_Interpreter(char* token) {
@@ -68,7 +68,7 @@ TOKEN_TYPE Token_Interpreter::token_type(Tree_Construct_Record* record) {
     return CONNECTOR;
   else if (is_precede_char())
     return PRECEDE_CHAR;
-  else if (is_test())
+  else if (is_test(record))
     return TEST;
 
   //NOTE: while comments, connectors, tests, and precedence chars are uniquely identifiable,
@@ -148,7 +148,7 @@ bool Token_Interpreter::is_precede_char() {
     i++;
   i--;
 
-  if (static_cast<std::string>(this->token) == "(" || this->token[0] == '(') {
+  if (static_cast<std::string>(this->token) == "(" || this->token[0] == '(') {    
     this->preced_char = '(';
     return true;
   }
@@ -159,7 +159,7 @@ bool Token_Interpreter::is_precede_char() {
   return false;
 }
 
-bool Token_Interpreter::is_test() const {
+bool Token_Interpreter::is_test(Tree_Construct_Record* record) const {
   //get index of last char
   unsigned i = 0;
   while(this->token[i] != '\0')
@@ -171,7 +171,15 @@ bool Token_Interpreter::is_test() const {
       this->token[0] == '[' || 
       static_cast<std::string>(this->token) == "]" ||
       this->token[i] == ']') 
-  { return true; }  
+  {
+    Tree_Construct_Record* youngest_child_record = record;
+    while (youngest_child_record->pend_preced_op)
+      youngest_child_record = youngest_child_record->child_record;
+    
+    //this allows 'test, '[', and ']' to be passed as arguments to other processes
+    if (!youngest_child_record->pend_process_init)  
+      return true; 
+  }  
 
   return false;
 }
