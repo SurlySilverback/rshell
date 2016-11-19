@@ -62,7 +62,7 @@ struct Tree_Construct_Record {
     parent_record(parent)
   {
     //since NULL-checks are used, set every element
-    for (unsigned i = 0; i < this->arg_array_size; i++)
+    for (int i = 0; i < this->arg_array_size; i++)
       this->pend_args[i] = NULL;
   };
 

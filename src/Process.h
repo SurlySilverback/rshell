@@ -70,7 +70,7 @@ class Process: public Command {
      
       char** updated_array = new char*[array_size + 2];
       //setting all the null first, because null checks for control later on
-      for (int i = 0; i < (array_size + 2); i++)
+      for (unsigned i = 0; i < (array_size + 2); i++)
         updated_array[i] = NULL;
 
       updated_array[0] = this->exec_name;
