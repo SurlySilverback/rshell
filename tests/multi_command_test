@@ -10,9 +10,3 @@ echo foo||echo bar;echo zap
 &&
 echo foo || #echo bar
 ls -l; mkdir SUPER#FLY
-test -e ../src/Line.h && echo Line exists!
-test -e ../src/oogabooga.h || echo Ooogabooga doesn't exist!
-#[ -e ../src/Line.h ] && echo Line exists!
-#( echo This && ekko That ) || ( echo foo && echo bar )
-#( echo foo && ( ekko bar || echo zap ) )
-#( echo Nested && ( echo like && ( echo freaking && echo crazy) ) )
