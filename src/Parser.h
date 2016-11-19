@@ -44,7 +44,7 @@ Line* Parser::parse() {
   Tree_Record_Updater*   record_updater = new Tree_Record_Updater(tree_record);
   
   //primary loop
-  for (int i = 0; i < token_vector.size(); i++) {
+  for (unsigned i = 0; i < token_vector.size(); i++) {
     Token_Interpreter token_interp(token_vector.at(i));        // 1.) create an interpreter, which gets details about current token     
     switch(token_interp.token_type(tree_record)) {             // 2.) invoke respective updater method based on type of token
       case COMMENT:
