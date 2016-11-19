@@ -81,6 +81,8 @@ void Tree_Record_Updater::arg_update(char* arg) {
 
 void Tree_Record_Updater::precede_char_update(char precede_char, signed array_count) {
   Tree_Construct_Record* record_to_update = find_record_to_update();
+  if (record_to_update == this->tree_record)
+    std::cout << "record to update is root record\n";
 
   //construct new child record for youngest child
   if (precede_char == '(') {
@@ -108,9 +110,9 @@ void Tree_Record_Updater::test_update() {
 //***************
 
 void Tree_Record_Updater::create_process() {
-  std::cout << "finding record to update\n";
   Tree_Construct_Record* record_to_update = find_record_to_update();
-  std::cout << "record found\n";  
+  if (record_to_update == this->tree_record)
+    std::cout << "process being created in root record\n";
 
   std::cout << "creating new process: " << record_to_update->pend_process_name << "\n";
   std::cout << record_to_update->pend_args[0] << std::endl;  
@@ -124,7 +126,8 @@ void Tree_Record_Updater::create_process() {
     record_to_update->r_child = new_process;
 }
 
-void Tree_Record_Updater::create_connect() {  
+void Tree_Record_Updater::create_connect() { 
+  std::cout << "creating connector\n"; 
   Tree_Construct_Record* record_to_update = find_record_to_update();
 
   Command* connector; 
@@ -171,10 +174,10 @@ void Tree_Record_Updater::create_test_process() {
 //finalize youngest child record and update parent with record's tree root
 void Tree_Record_Updater::create_preced_tree() {
   Tree_Construct_Record* record_to_update = find_record_to_update();
-
+   
   if (record_to_update->parent_record != NULL)
     record_to_update = record_to_update->parent_record;
-
+  
   Command* root = finalize_record();
 
   if (record_to_update->child_record != NULL) {

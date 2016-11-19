@@ -53,18 +53,21 @@ Line* Parser::parse() {
         break;
       
       case CONNECTOR:
+        std::cout << "parsed connector\n";
         record_updater->connect_update(token_vector.at(i));  
         if (token_interp.contains_closure_char())              // 3.) check for closure char; if found, finalize record and push tree root to line
           line.push_back(closure_handler(record_updater));  
         break;
       
       case COMMAND:
+        std::cout << "parsed command\n";
         record_updater->process_update(token_vector.at(i)); 
         if (token_interp.contains_closure_char())
           line.push_back(closure_handler(record_updater));          
         break;
       
       case ARGUMENT:
+        std::cout << "parsed argument\n";
         record_updater->arg_update(token_vector.at(i));
         if (token_interp.contains_closure_char())
           line.push_back(closure_handler(record_updater)); 
@@ -78,6 +81,7 @@ Line* Parser::parse() {
         break;
 
       case PRECEDE_CHAR:
+        std::cout << "parsed precede char\n";
         record_updater->precede_char_update(token_interp.preced_char_type(), this->token_vector.size());
         if (token_interp.contains_closure_char())
           line.push_back(closure_handler(record_updater));
