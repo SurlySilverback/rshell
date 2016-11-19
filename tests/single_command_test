@@ -1,12 +1,17 @@
-#single_command_test
-#Test cases (remove all but the one you wish to test)
-#For Null test case, delete file contents
-
 ls
-
 ls -l
-
-echo Hello World
-
+echo Hello
+test -e ../src/Line.h
+test -d ../src
+test -f ../src/Line.h
+test -e ../src/oogabooga.h
+test ../src/Line.h
+[ -e ../src/Line.h ]
+[ -d ../src ]
+[ -f ../src/line.h ]
+[ -e ../src/Line.h
+[ ../src/Line.h ]
 ekko typo_LOL
-
+echo #longword
+echo long#word
+exit
