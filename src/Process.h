@@ -79,6 +79,7 @@ class Process: public Command {
       delete [](this->args);
       return updated_array;
     }
+
 };
 	
 #endif

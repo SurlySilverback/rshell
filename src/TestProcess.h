@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <errno.h>
+#include <string>
 #include "Command.h"
 
 class TestProcess : public Command {
@@ -16,6 +17,7 @@ class TestProcess : public Command {
         TestProcess(char* path) 
         {
             std::string default_flag = "-e";
+            this->flag = new char;
             strcpy(this->flag, default_flag.c_str());
             this->path = path;
         }

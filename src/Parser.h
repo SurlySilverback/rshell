@@ -46,7 +46,6 @@ Line* Parser::parse() {
   //primary loop
   for (unsigned i = 0; i < token_vector.size(); i++) {
     Token_Interpreter token_interp(token_vector.at(i));        // 1.) create an interpreter, which gets details about current token     
-    
     switch(token_interp.token_type(tree_record)) {             // 2.) invoke respective updater method based on type of token
       case COMMENT:
         record_updater->finalize_record();
@@ -74,14 +73,20 @@ Line* Parser::parse() {
       //FIXME: new cases
       case TEST:
         record_updater->test_update();
+        if (token_interp.contains_closure_char())
+          line.push_back(closure_handler(record_updater));
         break;
+
       case PRECEDE_CHAR:
+        record_updater->precede_char_update(token_interp.preced_char_type(), this->token_vector.size());
+        if (token_interp.contains_closure_char())
+          line.push_back(closure_handler(record_updater));
         break;
     }
   }
 
-  //FIXME: what if this closure_handler call was immediately preceded by another one? 
-  line.push_back(closure_handler(record_updater)); 
+  //FIXME: what if this closure_handler call was immediately preceded by another one?
+  line.push_back(closure_handler(record_updater));
   current_line = new Line(line);
 
   return current_line; 

@@ -22,26 +22,28 @@ enum CONNECT_TYPE {AND, OR, END};
 #endif
 
 struct Tree_Construct_Record {  
-  Command*      root;
-  Command*      l_child;  
-  Command*      r_child;    
+  Command*               root;
+  Command*               l_child;  
+  Command*               r_child;    
 
-  bool          pend_connect_init;
-  bool          pend_process_init;
+  bool                   pend_connect_init;
+  bool                   pend_process_init;
 
-  char*         pend_process_name;  
-  CONNECT_TYPE* pend_connect_type;
+  char*                  pend_process_name;  
+  CONNECT_TYPE*          pend_connect_type;
 
-  unsigned      pend_arg_num;
-  int           arg_array_size;
-  char**        pend_args;
+  unsigned               pend_arg_num;
+  int                    arg_array_size;
+  char**                 pend_args;
 
   //New for assn3
-  bool pend_test_init;
-  bool pend_preced_op;
+  bool                   pend_test_init;
+  bool                   pend_preced_op;
   Tree_Construct_Record* child_record; 
+  Tree_Construct_Record* parent_record;
 
-  Tree_Construct_Record(int arg_array_size): 
+  //note the default parent argument, because root records will have no parent
+  Tree_Construct_Record(int arg_array_size, Tree_Construct_Record* parent = NULL): 
     root(NULL), 
     l_child(NULL), 
     r_child(NULL),
@@ -56,7 +58,8 @@ struct Tree_Construct_Record {
     //New for assn3
     pend_test_init(false),
     pend_preced_op(false), 
-    child_record(NULL)
+    child_record(NULL),
+    parent_record(parent)
   {
     //since NULL-checks are used, set every element
     for (unsigned i = 0; i < this->arg_array_size; i++)
@@ -64,7 +67,8 @@ struct Tree_Construct_Record {
   };
 
   ~Tree_Construct_Record() {
-    delete this->pend_connect_type;
+    if (this->pend_connect_type != NULL)
+      delete this->pend_connect_type;
   }
 };
 #endif
