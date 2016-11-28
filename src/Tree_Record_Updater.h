@@ -226,7 +226,7 @@ Command* Tree_Record_Updater::finalize_record() {
   if (record_to_finalize->pend_process_init)
     create_process();
   else if (record_to_finalize->pend_test_init)     //FIXME: note, previously test_update() was called
-    create_test();
+    create_test_process();
   else if (record_to_finalize->pend_dir_change)
     create_CD();
 
