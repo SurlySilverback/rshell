@@ -1,0 +1,3 @@
+echo foo && ( ekko bar || echo zap )
+ekko foo || ( echo bar && echo zap )
+( ekko 0 || echo Nested ) && ( echo as && ( echo freaking && echo heck ) )
