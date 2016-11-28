@@ -3,15 +3,14 @@
 #include "Line.h"
 #include "Command.h"
 
-int main() {
-  
+int main() {  
   int status = 0;
   
   do 
   {
        //std::cout << "$ ";
 
-       std::string input = "echo foo && echo bar && ls";
+       std::string input = "echo foo && echo bar";
 
        //getline(input, std::cin);
   
