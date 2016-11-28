@@ -26,9 +26,6 @@ class Or: public Command {
       return false;
     }
     
-    void print() {
-    }
-
   private:
     Command *LHS, *RHS;
 };

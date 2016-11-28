@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include "Tree_Construct_Record.h"
 
-enum TOKEN_TYPE {COMMENT, CONNECTOR, ARGUMENT, COMMAND, PRECEDE_CHAR, TEST};
+enum TOKEN_TYPE {COMMENT, CONNECTOR, ARGUMENT, COMMAND, PRECEDE_CHAR, TEST, DIR_CHANGE};
 
 //NOTES:
 //  -definition guard because also defined in Tree_Construct_Record.h
@@ -38,10 +38,9 @@ class Token_Interpreter {
     bool         is_comment() const;
     bool         is_connector() const;
     void         filter_closure_char();
-    
-    //NEW for assn3
     bool         is_precede_char();
     bool         is_test(Tree_Construct_Record*) const;
+    bool         is_cd() const;
 };
 
 Token_Interpreter::Token_Interpreter(char* token) {
@@ -68,14 +67,16 @@ TOKEN_TYPE Token_Interpreter::token_type(Tree_Construct_Record* record) {
     return CONNECTOR;
   else if (is_precede_char())
     return PRECEDE_CHAR;
+
+  //comments, connectors, and precedence chars terminate the process of accumulating process/test construction data,
+  //therefore, if there is an object pending construction, all tokens which are non accumulation-terminating are arguments
+  else if (youngest_child_record->pend_process_init || youngest_child_record->pend_test_init || youngest_child_record->pend_dir_change)
+    return ARGUMENT;
+
   else if (is_test(record))
     return TEST;
-
-  //NOTE: while comments, connectors, tests, and precedence chars are uniquely identifiable,
-  //      arguments and commands are discovered when tokens aren't any of the aforementioned types,
-  //      based on whether or there are any pending processes/tests
-  else if (youngest_child_record->pend_process_init || youngest_child_record->pend_test_init)
-    return ARGUMENT;
+  else if (is_cd()) 
+    return DIR_CHANGE;
   else
     return COMMAND;
 }
@@ -181,6 +182,12 @@ bool Token_Interpreter::is_test(Tree_Construct_Record* record) const {
       return true; 
   }  
 
+  return false;
+}
+
+bool Token_Interpreter::is_cd() const {
+  if (static_cast<std::string>(this->token) == "cd")
+    return true;
   return false;
 }
 #endif

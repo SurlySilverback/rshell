@@ -21,15 +21,7 @@ class And: public Command{
       }
       return false;
    }
-
-  void print() {
-    std::cout << "connector AND with children:\n";
-    if (this->LHS != NULL) 
-      this->LHS->print();
-    if (this->RHS != NULL)
-      this->RHS->print();
-  }
-  	
+ 	
   private:
     Command *LHS, *RHS;
 };

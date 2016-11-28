@@ -77,8 +77,4 @@ class TestProcess : public Command {
 		}
 	    }
         }
-        void print() {
-          std::cout << "test process: " << this->flag << " " << this->path << "\n";
-        }    
-
  };

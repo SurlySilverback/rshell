@@ -16,7 +16,7 @@ class Process: public Command {
 
   public:
     Process(char* exec_name = NULL, char** args = NULL) 
-    { 
+    {    
       this-> exec_name = exec_name; 
       this-> args = args;
     }
@@ -83,13 +83,6 @@ class Process: public Command {
       return updated_array;
     }
     
-    void print() {
-      this->args = prepend_char_pointer_array();
-      std::cout << "process " << this->exec_name << " with args: \n";
-      for (unsigned i = 0; this->args[i] != NULL; i++)
-        std::cout << this->args[i] << " ";
-      std::cout << std::endl << std::endl;
-    }
 };
 	
 #endif

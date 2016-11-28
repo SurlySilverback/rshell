@@ -21,11 +21,6 @@ class Line: public Command{
         }
         return true;
     }
-
-  void print() {
-    for (unsigned i = 0; i < process_trees.size(); i++) 
-      process_trees.at(i)->print();
-  }
     
   private:
       std::vector<Command*> process_trees;	

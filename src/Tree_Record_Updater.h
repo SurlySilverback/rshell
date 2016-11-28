@@ -13,6 +13,7 @@
 #include "TestProcess.h"
 #include "And.h"
 #include "Or.h"
+#include "CD.h"
 
 //fwd declare
 class Test;
@@ -27,17 +28,20 @@ class Tree_Record_Updater {
     void     arg_update(char*);
     void     test_update();
     void     precede_char_update(char, int);
+    void     directory_update();
+
     Command* finalize_record();
     void     reinit_record(int token_size); 
 
     Tree_Construct_Record* find_record_to_update() const;
     
   private:
-    void                   create_process();
-    void                   create_connect();
-    void                   create_test_process();
-    void                   create_preced_tree();
-    void                   reset_pend_process_records();
+    void     create_process();
+    void     create_connect();
+    void     create_test_process();
+    void     create_preced_tree();
+    void     reset_pend_process_records();
+    void     create_CD();   
 };
 
 Tree_Record_Updater::Tree_Record_Updater(Tree_Construct_Record* record) {
@@ -54,6 +58,8 @@ void Tree_Record_Updater::connect_update(char* new_connect) {
     create_process();  
   else if (record_to_update->pend_test_init) 
     create_test_process();
+  else if (record_to_update->pend_dir_change)
+    create_CD(); 
 
   if (record_to_update->pend_connect_init)   
     create_connect();
@@ -81,12 +87,9 @@ void Tree_Record_Updater::arg_update(char* arg) {
 
 void Tree_Record_Updater::precede_char_update(char precede_char, signed array_count) {
   Tree_Construct_Record* record_to_update = find_record_to_update();
-  if (record_to_update == this->tree_record)
-    std::cout << "record to update is root record\n";
 
   //construct new child record for youngest child
   if (precede_char == '(') {
-    std::cout << "starting precedence tree, pend_preced == true and child_record instantiated\n"; 
     record_to_update->child_record = new Tree_Construct_Record(array_count, record_to_update);
     record_to_update->pend_preced_op = true;
   }
@@ -105,17 +108,17 @@ void Tree_Record_Updater::test_update() {
   record_to_update->pend_test_init = true;
 }
 
+void Tree_Record_Updater::directory_update() {
+  Tree_Construct_Record* record_to_update = find_record_to_update();
+  record_to_update->pend_dir_change = true;
+}
+
 //***************
 //creator methods
 //***************
 
 void Tree_Record_Updater::create_process() {
   Tree_Construct_Record* record_to_update = find_record_to_update();
-  if (record_to_update == this->tree_record)
-    std::cout << "process being created in root record\n";
-
-  std::cout << "creating new process: " << record_to_update->pend_process_name << "\n";
-  std::cout << record_to_update->pend_args[0] << std::endl;  
 
   Process* new_process = new Process(record_to_update->pend_process_name, record_to_update->pend_args);
   reset_pend_process_records();
@@ -127,7 +130,6 @@ void Tree_Record_Updater::create_process() {
 }
 
 void Tree_Record_Updater::create_connect() { 
-  std::cout << "creating connector\n"; 
   Tree_Construct_Record* record_to_update = find_record_to_update();
 
   Command* connector; 
@@ -158,7 +160,9 @@ void Tree_Record_Updater::create_test_process() {
   TestProcess* new_test;
   
   //use appropriate constructor based on whether there is an explicit flag argument  
-  if (record_to_update->pend_args[1] == NULL)
+  if (record_to_update->pend_args[0] == NULL)
+    new_test = new TestProcess(NULL);
+  else if (record_to_update->pend_args[1] == NULL) 
     new_test = new TestProcess(record_to_update->pend_args[0]);
   else 
     new_test = new TestProcess(record_to_update->pend_args[0], record_to_update->pend_args[1]); 
@@ -193,6 +197,23 @@ void Tree_Record_Updater::create_preced_tree() {
     record_to_update->r_child = root;
 }
 
+void Tree_Record_Updater::create_CD() {
+  Tree_Construct_Record* record_to_update = find_record_to_update();
+  CD* new_cd;
+  
+  if (record_to_update->pend_args[0] != NULL)
+    new_cd = new CD(record_to_update->pend_args[0]);
+  else
+    new_cd = new CD(NULL);
+
+  if (record_to_update->l_child == NULL)
+    record_to_update->l_child = new_cd;
+  else
+    record_to_update->r_child = new_cd;
+
+  reset_pend_process_records();
+}
+
 //******************************
 //finalization and reset methods
 //******************************
@@ -202,13 +223,13 @@ void Tree_Record_Updater::create_preced_tree() {
 Command* Tree_Record_Updater::finalize_record() {
   Tree_Construct_Record* record_to_finalize = find_record_to_update();
 
-  if (record_to_finalize->pend_process_init) {
+  if (record_to_finalize->pend_process_init)
     create_process();
-  }
- 
-  else if (record_to_finalize->pend_test_init)
-    test_update();
-  
+  else if (record_to_finalize->pend_test_init)     //FIXME: note, previously test_update() was called
+    create_test();
+  else if (record_to_finalize->pend_dir_change)
+    create_CD();
+
   if (record_to_finalize->pend_connect_init)
     create_connect(); 
 
@@ -227,6 +248,7 @@ void Tree_Record_Updater::reset_pend_process_records() {
 
   record_to_update->pend_process_init = false;
   record_to_update->pend_test_init = false;
+  record_to_update->pend_dir_change = false;
   record_to_update->pend_args = new char*[tree_record->arg_array_size];
   record_to_update->pend_arg_num = 0;
    
@@ -241,11 +263,9 @@ void Tree_Record_Updater::reset_pend_process_records() {
 //each update will need to determine the youngest record (to account for precede ops)
 Tree_Construct_Record* Tree_Record_Updater::find_record_to_update() const {
   Tree_Construct_Record* current = this->tree_record;
-  
-  while (current->pend_preced_op) {
-    current = current->child_record;
-  }
  
+  while (current->pend_preced_op)
+    current = current->child_record; 
   return current;
 }
 

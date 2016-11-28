@@ -28,17 +28,18 @@ struct Tree_Construct_Record {
 
   bool                   pend_connect_init;
   bool                   pend_process_init;
+  bool                   pend_dir_change;
 
   char*                  pend_process_name;  
   CONNECT_TYPE*          pend_connect_type;
+
+  bool                   pend_test_init;
+  bool                   pend_preced_op;
 
   unsigned               pend_arg_num;
   int                    arg_array_size;
   char**                 pend_args;
 
-  //New for assn3
-  bool                   pend_test_init;
-  bool                   pend_preced_op;
   Tree_Construct_Record* child_record; 
   Tree_Construct_Record* parent_record;
 
@@ -49,13 +50,12 @@ struct Tree_Construct_Record {
     r_child(NULL),
     pend_connect_init(false),
     pend_process_init(false),  
+    pend_dir_change(false),
     pend_process_name(NULL), 
     pend_connect_type(NULL),
     pend_arg_num(0),
     arg_array_size(arg_array_size),
     pend_args(new char*[arg_array_size]),
-
-    //New for assn3
     pend_test_init(false),
     pend_preced_op(false), 
     child_record(NULL),
