@@ -38,13 +38,19 @@ bool CD::execute() {
     return true;
   } 
 
- // if ( static_cast<std::string>(this->path) == ".." ){
+  // If the entry is "cd .."
+  if ( static_cast<std::string>(this->path) == ".." ){
+    char* temp = getenv("PWD");
+    int pwd_count = 0;
+    for (unsigned i = 0; temp[i] != '\0'; ++i)
+      ++pwd_count;
+
     
-  //}
+  }
 
   // If the entry is "cd <PATH>"
   if (chdir(this->path) == 0) {
-    setenv("OLDPWD", "PWD", 1);
+    setenv("OLDPWD", getenv("PWD"), 1);
     setenv("PWD", append_relative_path(), 1);
     return true; 
   }
