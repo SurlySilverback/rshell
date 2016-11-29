@@ -14,12 +14,11 @@ class CD: public Command {
 
   bool execute();
 private:
-  char* append_relative_path(); 
+  char* append_relative_path() const;
+  unsigned int get_array_length(char*) const; 
+  void append_to_array(char*, char*, int) const;
 };
 
-//FIXME: distinguish between relative and explicit paths
-//NOTE: since a relative path cannot be prepended with '/', setenv will omit them
-//      in the updated path in the prompt
 bool CD::execute() {
   if (this->path == NULL) { 
     chdir(getenv("program_root"));
@@ -32,33 +31,43 @@ bool CD::execute() {
     return true; 
   }
 
-  return true;
+  return false;
 }
 
-char* CD::append_relative_path() {
+char* CD::append_relative_path() const {
   char* current_dir = getenv("PWD");
-  unsigned int old_char_count = 0;
-
-  //get length of directory path that is being appended
-  for (unsigned i = 0; current_dir[i] != '\0'; i++)
-    old_char_count++; 
-           
-  //get length of relative path that will be appended
-  unsigned int relative_char_count = 0;
-  for (unsigned i = 0; this->path[i] != '\0'; i++)
-    relative_char_count++; 
-      
-  //append path to old
-  char* updated_directory = new char[old_char_count + relative_char_count + 1];
+  unsigned int curr_char_count     = get_array_length(current_dir);
+  unsigned int rel_path_char_count = get_array_length(this->path);
+                 
+  //allocate for updated path (+ 2 for these chars)
+  char* updated_directory = new char[curr_char_count + rel_path_char_count + 2];
     
-  for (unsigned i = 0; current_dir[i] != '\0'; i++)
-    updated_directory[i] = current_dir[i];      
+  //copy current path
+  append_to_array(updated_directory, current_dir, 0);
 
-  unsigned i = 0;
-  for (i = 0; this->path[i] != '\0'; i++)
-    updated_directory[old_char_count + i] = this->path[i];  
-  updated_directory[old_char_count + i] = '\0';
+  //append forward slash
+  std::string path_delim = "/";
+  char* path_delim_char = new char;
+  strcpy (path_delim_char, path_delim.c_str());  
+  append_to_array(updated_directory, path_delim_char, curr_char_count);
+  delete path_delim_char;
+  
+  //append relative path
+  append_to_array(updated_directory, this->path, curr_char_count + 1);
 
   return updated_directory;
+}
+
+unsigned int CD::get_array_length(char* to_count) const {
+  unsigned int count = 0;
+
+  for (unsigned i = 0; to_count[i] != '\0'; i++)
+    count++; 
+  return count;
+}
+
+void CD::append_to_array(char* to_append, char* appending_chars, int copy_offset) const {
+  for (int i = 0; appending_chars[i] != '\0'; i++)
+    to_append[copy_offset + i] = appending_chars[i];
 }
 #endif
