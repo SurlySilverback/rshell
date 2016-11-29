@@ -14,6 +14,8 @@ int main() {
   setenv("program_root", getenv("PWD"), 1); 
   std::cout << "setting program_root to " << getenv("program_root") << std::endl << std::endl; 
 
+  std::cout << "OLDPWD is " << getenv("OLDPWD") << std::endl;
+
   do 
   {
        std::cout << getenv("PWD") << "$ ";
