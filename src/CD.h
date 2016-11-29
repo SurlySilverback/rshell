@@ -42,7 +42,7 @@ bool CD::execute() {
 
   //If the entry is "cd <PATH>"
   if (chdir(this->path) == 0) {
-    setenv("OLDPWD", "PWD", 1);
+    setenv("OLDPWD", getenv("PWD"), 1);
     setenv("PWD", append_relative_path(), 1);
     return true; 
   }
@@ -50,7 +50,7 @@ bool CD::execute() {
   return false;
 }
 
-char* CD::append_to_relative_path() const {
+char* CD::append_relative_path() const {
   char* current_dir = getenv("PWD");
   unsigned int curr_char_count     = get_array_length(current_dir);
   unsigned int rel_path_char_count = get_array_length(this->path);
