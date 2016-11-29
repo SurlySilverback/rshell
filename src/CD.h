@@ -20,15 +20,30 @@ private:
 };
 
 bool CD::execute() {
-  if (this->path == NULL) { 
+  //if no specified path, default to home
+  if ( this->path == NULL ) { 
     chdir(getenv("program_root"));
     setenv("PWD", getenv("program_root"), 1);
     return true;
   }
 
-  //determine in this branch of relative or explicit
+  //step back
+  if ( this-> path[0] == '-'){
+    // This will be a classic two-variable swap using a temp as an intermediary placeholder
+    char* temp = getenv("PWD");
+    setenv("PWD", getenv("OLDPWD"), 1);
+    setenv("OLDPWD", temp, 1);
+    chdir( getenv("PWD") );
+    return true;
+  } 
+
+  //if ( static_cast<std::string>(this->path) == ".." ){
+  //}
+
+  //If the entry is "cd <PATH>"
   if (chdir(this->path) == 0) {
-    setenv("PWD", append_to_relative_path(), 1);
+    setenv("OLDPWD", "PWD", 1);
+    setenv("PWD", append_relative_path(), 1);
     return true; 
   }
 
