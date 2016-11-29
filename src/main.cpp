@@ -5,16 +5,18 @@
 #include "Parser.h"
 #include "Line.h"
 #include "Command.h"
+#include <unistd.h>
+#include <stdlib.h>
 
-int main() {
-  
+int main() { 
   int status = 0;
-  
+
+  setenv("program_root", getenv("PWD"), 1); 
+  std::cout << "setting program_root to " << getenv("program_root") << std::endl << std::endl; 
+
   do 
   {
-      // YOU HAVE BEEN OVERWRITTEN
-
-       std::cout << getenv("PWD") <<  "$ ";
+       std::cout << getenv("PWD") << "$ ";
 
        std::string input;
     
