@@ -8,15 +8,15 @@ class CD: public Command {
   char* path;
  
  public:
-  CD(char* path) {
-    this->path = path;
-  }
+  CD(char* path) { this->path = path; }
 
   bool execute();
+
 private:
   char* append_relative_path() const;
   unsigned int get_array_length(char*) const; 
   void append_to_array(char*, char*, int) const;
+  char* string_to_char_ptr(std::string to_convert) const;
 };
 
 bool CD::execute() {
@@ -26,15 +26,16 @@ bool CD::execute() {
     return true;
   }
 
+  //determine in this branch of relative or explicit
   if (chdir(this->path) == 0) {
-    setenv("PWD", append_relative_path(), 1);
+    setenv("PWD", append_to_relative_path(), 1);
     return true; 
   }
 
   return false;
 }
 
-char* CD::append_relative_path() const {
+char* CD::append_to_relative_path() const {
   char* current_dir = getenv("PWD");
   unsigned int curr_char_count     = get_array_length(current_dir);
   unsigned int rel_path_char_count = get_array_length(this->path);
@@ -42,19 +43,22 @@ char* CD::append_relative_path() const {
   //allocate for updated path (+ 2 for these chars)
   char* updated_directory = new char[curr_char_count + rel_path_char_count + 2];
     
-  //copy current path
+  //append current directory
   append_to_array(updated_directory, current_dir, 0);
-
-  //append forward slash
-  std::string path_delim = "/";
-  char* path_delim_char = new char;
-  strcpy (path_delim_char, path_delim.c_str());  
-  append_to_array(updated_directory, path_delim_char, curr_char_count);
-  delete path_delim_char;
   
+  //append forward slash
+  char* path_delim = string_to_char_ptr("/");
+  append_to_array(updated_directory, path_delim, curr_char_count);
+  delete path_delim;  
+
   //append relative path
   append_to_array(updated_directory, this->path, curr_char_count + 1);
 
+  //append null char
+  char* terminating_char = string_to_char_ptr("\0");
+  append_to_array(updated_directory, terminating_char, curr_char_count);
+  delete terminating_char;
+  
   return updated_directory;
 }
 
@@ -64,6 +68,13 @@ unsigned int CD::get_array_length(char* to_count) const {
   for (unsigned i = 0; to_count[i] != '\0'; i++)
     count++; 
   return count;
+}
+
+char* CD::string_to_char_ptr(std::string to_convert) const {
+  char* converted = new char;
+  strcpy (converted, to_convert.c_str());
+
+  return converted;
 }
 
 void CD::append_to_array(char* to_append, char* appending_chars, int copy_offset) const {
