@@ -1,5 +1,7 @@
 #include <string.h>
 #include <iostream>
+#include <unistd.h>
+#include <stdio.h>
 #include "Parser.h"
 #include "Line.h"
 #include "Command.h"
@@ -10,7 +12,9 @@ int main() {
   
   do 
   {
-       std::cout << "$ ";
+      // YOU HAVE BEEN OVERWRITTEN
+
+       std::cout << getenv("PWD") <<  "$ ";
 
        std::string input;
     

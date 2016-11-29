@@ -17,9 +17,9 @@ class CD: public Command {
 
       //appends this->path to the PWD directory
       //note that '/' needs to prepended when inputting cd arguments while running in the shell
-      /* 
-      chdir(this->path);
       
+      chdir(this->path);
+      /*
       char* current_dir = getenv("PWD");
       unsigned int old_char_count = 0;
 
@@ -42,7 +42,12 @@ class CD: public Command {
       updated_directory[old_char_count + i] = '\0';
       */
     
-      setenv("PWD", "HOME", 1); 
+      std::cout << "OLDPWD is: " << getenv("OLDPWD") << std::endl;
+      std::cout << "PWD is:    " << getenv("PWD") << std::endl;
+
+      setenv( getenv("PWD"), getenv("OLDPWD"), 1);
+      setenv( this->path, getenv("PWD"), 1);
+      
       return true;
     }
 };
