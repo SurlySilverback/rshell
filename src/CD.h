@@ -4,32 +4,35 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#define HOME_ENV_KEY "program_root"
+
 class CD: public Command {
   char* path;
  
- public:
-  CD(char* path) { this->path = path; }
+  public:
+    CD(char* path) { this->path = path; }
+    bool execute();
 
-  bool execute();
-
-private:
-  char* append_relative_path() const;
-  unsigned int get_array_length(char*) const; 
-  void append_to_array(char*, char*, int) const;
-  char* string_to_char_ptr(std::string to_convert) const;
+  private:
+    char*        append_relative_path() const;
+    unsigned int get_array_length(char*) const; 
+    void         append_to_array(char*, char*, int) const;
+    char*        string_to_char_ptr(std::string to_convert) const;
+    bool         is_explicit_path() const;
+    char*        extract_first_dir_name(char*) const;
 };
 
 bool CD::execute() {
   //if no specified path, default to home
   if ( this->path == NULL ) { 
     chdir(getenv("program_root"));
-    setenv("PWD", getenv("program_root"), 1);
+    setenv("PWD", getenv(HOME_ENV_KEY), 1);
     return true;
   }
 
   //step back
-  if ( this-> path[0] == '-'){
-    // This will be a classic two-variable swap using a temp as an intermediary placeholder
+  if (this-> path[0] == '-'){
+    //This will be a classic two-variable swap using a temp as an intermediary placeholder
     char* temp = getenv("PWD");
     setenv("PWD", getenv("OLDPWD"), 1);
     setenv("OLDPWD", temp, 1);
@@ -75,10 +78,13 @@ bool CD::execute() {
   //If the entry is "cd <PATH>"
   if (chdir(this->path) == 0) {
     setenv("OLDPWD", getenv("PWD"), 1);
-    setenv("PWD", append_relative_path(), 1);
+
+    if (is_explicit_path())
+      setenv("PWD", this->path, 1);
+    else
+      setenv("PWD", append_relative_path(), 1); 
     return true; 
   }
-
   return false;
 }
 
@@ -128,4 +134,58 @@ void CD::append_to_array(char* to_append, char* appending_chars, int copy_offset
   for (int i = 0; appending_chars[i] != '\0'; i++)
     to_append[copy_offset + i] = appending_chars[i];
 }
+
+//determines whether argument is an explicit path based on whether the argument follows the pattern '/<home_directory_name>'
+bool CD::is_explicit_path() const{
+  char* home_directory = getenv(HOME_ENV_KEY);
+
+  if (this->path == NULL)
+    return false;  
+
+  else if (static_cast<std::string>(this->path) == "/")
+    return true;
+
+  else if (this->path[0] == '/') {
+    char* first_directory_root = extract_first_dir_name(home_directory); 
+    char* first_directory_path = extract_first_dir_name(this->path);
+
+    if (*first_directory_root == *first_directory_path) {
+      delete first_directory_root;
+      delete first_directory_path;
+      
+      return true;
+    } 
+    delete first_directory_root;
+    delete first_directory_path;
+  }
+    
+  return false; 
+}
+
+//this method parses the 'home' path and extracts the name of the first highest-level directory immediately under root
+char* CD::extract_first_directory(char* to_extract) const {
+  char* extracted_dir_name = new char[get_array_length(to_extract)];
+
+  //extract from different indices based on if first element is '/'
+  if (to_extract[0] == '/') {
+    for (unsigned i = 1; to_extract[i] != '\0'; i++) { 
+      if (to_extract[i] == '/')
+        break;
+      extracted_dir_name[i - 1] = to_extract[i];
+    }
+    extracted_dir_name[i - 1] = '\0';
+  }
+
+  else {  
+    for (unsigned i = 0; to_extract[i] != '\0'; i++) {
+      if (to_extract[i] == '/')
+        break;
+      extracted_dir_name[i] = to_extract[i];
+    }
+    extracted_dir_name[i] = '\0';
+  }
+ 
+  return extracted_dir_name;     
+} 
+
 #endif

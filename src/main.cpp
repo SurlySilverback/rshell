@@ -1,18 +1,18 @@
 #include <string.h>
 #include <iostream>
-#include <unistd.h>
-#include <stdio.h>
 #include "Parser.h"
 #include "Line.h"
 #include "Command.h"
 #include <unistd.h>
 #include <stdlib.h>
 
+#ifndef HOME_ENV_KEY
+#define HOME_ENV_KEY "program_root"
+#endif
+
 int main() { 
   int status = 0;
-  setenv("program_root", getenv("PWD"), 1); 
-
-  std::cout << "OLDPWD is " << getenv("OLDPWD") << std::endl;
+  setenv(HOME_ENV_KEY, getenv("PWD"), 1); 
 
   do 
   {
