@@ -3,6 +3,7 @@
 #include "Command.h"
 #include <unistd.h>
 #include <stdlib.h>
+#include <libgen.h>
 
 #define HOME_ENV_KEY "program_root"
 
@@ -25,8 +26,8 @@ class CD: public Command {
 bool CD::execute() {
   //if no specified path, default to home
   if ( this->path == NULL ) { 
-    chdir(getenv("program_root"));
     setenv("PWD", getenv(HOME_ENV_KEY), 1);
+    chdir(getenv("program_root"));
     return true;
   }
 
@@ -42,35 +43,12 @@ bool CD::execute() {
 
   // If the entry is "cd .."
   if ( static_cast<std::string>(this->path) == ".." ){
-    // Check here to make sure we're not at ~
-
-    // First, get the current path
-    char* temp = getenv("PWD");
-    int pwd_count = 0;
-    int fwd_slash_pos = 0;
-
-    // Find the length of the current path
-    for (unsigned i = 0; temp[i] != '\0'; ++i){
-      ++pwd_count;
-    }
-    // Starting from the end of the current path, count backwards until the first fwd slash is found
-    for (unsigned i = pwd_count; temp[i] != '/'; --i){
-      ++fwd_slash_pos;
-    }
-    // Make a new char* of length original minus fwd slash position
-    char* up_dir = new char[(pwd_count - fwd_slash_pos)];
-
-    // Copy over the string, minus everything after the fwd slash
-    unsigned int i = 0;
-    for (i = 0; i < pwd_count - fwd_slash_pos; ++i){
-      up_dir[i] = temp[i];
-    }
-    // Append a null terminator
-    up_dir[i] = '\0';
+    
+    char* new_dir = dirname( getenv("PWD") );   
 
     setenv("OLDPWD", getenv("PWD"), 1);
-    setenv("PWD", getenv(up_dir), 1);
-    chdir(up_dir);
+    setenv("PWD", new_dir, 1);
+    chdir(new_dir);
     
     return true;
   }
@@ -85,6 +63,7 @@ bool CD::execute() {
       setenv("PWD", append_relative_path(), 1); 
     return true; 
   }
+
   return false;
 }
 
@@ -163,12 +142,14 @@ bool CD::is_explicit_path() const{
 }
 
 //this method parses the 'home' path and extracts the name of the first highest-level directory immediately under root
-char* CD::extract_first_directory(char* to_extract) const {
+char* CD::extract_first_dir_name(char* to_extract) const {
+ 
   char* extracted_dir_name = new char[get_array_length(to_extract)];
-
+  
+  unsigned int i;
   //extract from different indices based on if first element is '/'
   if (to_extract[0] == '/') {
-    for (unsigned i = 1; to_extract[i] != '\0'; i++) { 
+    for (i = 1; to_extract[i] != '\0'; i++) { 
       if (to_extract[i] == '/')
         break;
       extracted_dir_name[i - 1] = to_extract[i];
@@ -177,7 +158,7 @@ char* CD::extract_first_directory(char* to_extract) const {
   }
 
   else {  
-    for (unsigned i = 0; to_extract[i] != '\0'; i++) {
+    for (i = 0; to_extract[i] != '\0'; i++) {
       if (to_extract[i] == '/')
         break;
       extracted_dir_name[i] = to_extract[i];
