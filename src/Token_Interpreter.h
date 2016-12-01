@@ -27,12 +27,21 @@ class Token_Interpreter {
     char*        token;
     bool         closure_char;
     char         preced_char;
+
+    //FIXME: member fo flush preced
+    bool         contains_flush_preced;
+    int          adjace_preced_count;
   public:
                  Token_Interpreter(char*);
     TOKEN_TYPE   token_type(Tree_Construct_Record*);
     CONNECT_TYPE connect_type() const;
     char         preced_char_type() const;
     bool         contains_closure_char() const;
+
+    //FIXME: method for flush preced
+    bool         check_flush_preced();
+    char*        get_updated_token() const;
+    int          get_adjace_preced_count() const;
 
   private:
     bool         is_comment() const;
@@ -41,6 +50,10 @@ class Token_Interpreter {
     bool         is_precede_char();
     bool         is_test(Tree_Construct_Record*) const;
     bool         is_cd() const;
+    void         count_adjace_preced();
+
+    //FIXME: method for flush preced
+    void         filter_preced_char();
 };
 
 Token_Interpreter::Token_Interpreter(char* token) {
@@ -53,6 +66,13 @@ Token_Interpreter::Token_Interpreter(char* token) {
   if (contains_closure_char()) {
     closure_char = true;
     filter_closure_char();
+  }
+
+  //FIXME: check for flush preced
+  this->contains_flush_preced = false;
+  if (check_flush_preced()) {
+    this->contains_flush_preced = true;
+    filter_preced_char();
   }
 }
 
@@ -189,5 +209,60 @@ bool Token_Interpreter::is_cd() const {
   if (static_cast<std::string>(this->token) == "cd")
     return true;
   return false;
+}
+
+bool Token_Interpreter::check_flush_preced() {
+  bool contained_flush = false;
+  
+  for (unsigned i = 0; this->token[i] != '\0'; i++) {
+    if (this->token[i] == '(' || this->token[i] == ')') {
+      this->preced_char = this->token[i];
+      (this->adjace_preced_count)++;
+      contained_flush = true;
+    }
+  }
+  if (contained_flush)
+    return true;
+
+  //this branch is for calls outside of the class constructor
+  if (this->contains_flush_preced == true)
+    return true;
+
+  return false;
+}
+
+void Token_Interpreter::filter_preced_char() {
+  unsigned i;
+  for (i = 0; this->token[i] != '\0'; i++) {}
+ 
+  i--;
+
+  if (this->token[0] == '(') {
+    char* updated_token = new char[i];
+
+    //copy array, exluding opening parenthesis
+    for (unsigned i = 0; this->token[i + 1] != '\0'; i++)
+      updated_token[i] = this->token[i + 1];
+
+    this->token = updated_token;
+  } 
+
+  if (this->token[i] == ')') {
+    while (this->token[i] == ')') {
+      this->token[i] = '\0';
+      i--;
+    }
+    i++;
+    this->token[i] = '\0';
+  }
+}
+
+int Token_Interpreter::get_adjace_preced_count() const {
+  return this->adjace_preced_count;
+}
+
+//if the original token was modified, then the updated version needs to be accessed by parser
+char* Token_Interpreter::get_updated_token() const {
+  return this->token;
 }
 #endif

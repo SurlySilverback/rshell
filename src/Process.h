@@ -16,7 +16,7 @@ class Process: public Command {
 
   public:
     Process(char* exec_name = NULL, char** args = NULL) 
-    {    
+    {      
       this-> exec_name = exec_name; 
       this-> args = args;
     }

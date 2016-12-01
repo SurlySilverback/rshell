@@ -24,7 +24,8 @@ class CD: public Command {
 
 bool CD::execute() {
   //if no specified path, default to home
-  if ( this->path == NULL ) { 
+  if ( this->path == NULL ) {
+    setenv("OLDPWD", getenv("PWD"), 1); 
     chdir(getenv("program_root"));
     setenv("PWD", getenv(HOME_ENV_KEY), 1);
     return true;
@@ -40,8 +41,7 @@ bool CD::execute() {
     return true;
   } 
 
-  //if ( static_cast<std::string>(this->path) == ".." ){
-  //}
+  if ( static_cast<std::string>(this->path) == ".." ){}
 
   //If the entry is "cd <PATH>"
   if (chdir(this->path) == 0) {
@@ -131,12 +131,14 @@ bool CD::is_explicit_path() const{
 }
 
 //this method parses the 'home' path and extracts the name of the first highest-level directory immediately under root
-char* CD::extract_first_directory(char* to_extract) const {
+char* CD::extract_first_dir_name(char* to_extract) const {
   char* extracted_dir_name = new char[get_array_length(to_extract)];
+
+  unsigned i;
 
   //extract from different indices based on if first element is '/'
   if (to_extract[0] == '/') {
-    for (unsigned i = 1; to_extract[i] != '\0'; i++) { 
+    for (i = 1; to_extract[i] != '\0'; i++) { 
       if (to_extract[i] == '/')
         break;
       extracted_dir_name[i - 1] = to_extract[i];
@@ -145,7 +147,7 @@ char* CD::extract_first_directory(char* to_extract) const {
   }
 
   else {  
-    for (unsigned i = 0; to_extract[i] != '\0'; i++) {
+    for (i = 0; to_extract[i] != '\0'; i++) {
       if (to_extract[i] == '/')
         break;
       extracted_dir_name[i] = to_extract[i];
