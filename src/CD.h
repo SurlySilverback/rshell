@@ -8,27 +8,26 @@ class CD: public Command {
   char* path;
  
  public:
-  CD(char* path) {
-    this->path = path;
-  }
+  CD(char* path) { this->path = path; }
 
   bool execute();
+
 private:
   char* append_relative_path() const;
   unsigned int get_array_length(char*) const; 
   void append_to_array(char*, char*, int) const;
+  char* string_to_char_ptr(std::string to_convert) const;
 };
 
 bool CD::execute() {
-  
-  // If the entry is "cd"
+  //if no specified path, default to home
   if ( this->path == NULL ) { 
     chdir(getenv("program_root"));
     setenv("PWD", getenv("program_root"), 1);
     return true;
   }
 
-  // If the entry is "cd -"
+  //step back
   if ( this-> path[0] == '-'){
     // This will be a classic two-variable swap using a temp as an intermediary placeholder
     char* temp = getenv("PWD");
@@ -40,15 +39,40 @@ bool CD::execute() {
 
   // If the entry is "cd .."
   if ( static_cast<std::string>(this->path) == ".." ){
+    // Check here to make sure we're not at ~
+
+    // First, get the current path
     char* temp = getenv("PWD");
     int pwd_count = 0;
-    for (unsigned i = 0; temp[i] != '\0'; ++i)
-      ++pwd_count;
+    int fwd_slash_pos = 0;
 
+    // Find the length of the current path
+    for (unsigned i = 0; temp[i] != '\0'; ++i){
+      ++pwd_count;
+    }
+    // Starting from the end of the current path, count backwards until the first fwd slash is found
+    for (unsigned i = pwd_count; temp[i] != '/'; --i){
+      ++fwd_slash_pos;
+    }
+    // Make a new char* of length original minus fwd slash position
+    char* up_dir = new char[(pwd_count - fwd_slash_pos)];
+
+    // Copy over the string, minus everything after the fwd slash
+    unsigned int i = 0;
+    for (i = 0; i < pwd_count - fwd_slash_pos; ++i){
+      up_dir[i] = temp[i];
+    }
+    // Append a null terminator
+    up_dir[i] = '\0';
+
+    setenv("OLDPWD", getenv("PWD"), 1);
+    setenv("PWD", getenv(up_dir), 1);
+    chdir(up_dir);
     
+    return true;
   }
 
-  // If the entry is "cd <PATH>"
+  //If the entry is "cd <PATH>"
   if (chdir(this->path) == 0) {
     setenv("OLDPWD", getenv("PWD"), 1);
     setenv("PWD", append_relative_path(), 1);
@@ -66,27 +90,24 @@ char* CD::append_relative_path() const {
   //allocate for updated path (+ 2 for these chars)
   char* updated_directory = new char[curr_char_count + rel_path_char_count + 2];
     
-  //copy current path
+  //append current directory
   append_to_array(updated_directory, current_dir, 0);
-
-  unsigned i = 0;
-  for (i = 0; this->path[i] != '\0'; i++)
-    updated_directory[curr_char_count + i] = this->path[i];  
-    updated_directory[curr_char_count + i] = '\0';
-
-  //append forward slash
-  std::string path_delim = "/";
-  char* path_delim_char = new char;
-  strcpy (path_delim_char, path_delim.c_str());  
-  append_to_array(updated_directory, path_delim_char, curr_char_count);
-  delete path_delim_char;
   
+  //append forward slash
+  char* path_delim = string_to_char_ptr("/");
+  append_to_array(updated_directory, path_delim, curr_char_count);
+  delete path_delim;  
+
   //append relative path
   append_to_array(updated_directory, this->path, curr_char_count + 1);
 
+  //append null char
+  char* terminating_char = string_to_char_ptr("\0");
+  append_to_array(updated_directory, terminating_char, curr_char_count);
+  delete terminating_char;
+  
   return updated_directory;
 }
-
 
 unsigned int CD::get_array_length(char* to_count) const {
   unsigned int count = 0;
@@ -96,9 +117,15 @@ unsigned int CD::get_array_length(char* to_count) const {
   return count;
 }
 
+char* CD::string_to_char_ptr(std::string to_convert) const {
+  char* converted = new char;
+  strcpy (converted, to_convert.c_str());
+
+  return converted;
+}
+
 void CD::append_to_array(char* to_append, char* appending_chars, int copy_offset) const {
   for (int i = 0; appending_chars[i] != '\0'; i++)
     to_append[copy_offset + i] = appending_chars[i];
 }
-
 #endif
