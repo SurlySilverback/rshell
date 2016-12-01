@@ -42,7 +42,7 @@ class TestProcess : public Command {
                     else
 	            {
                         std::cout << "(False)" << std::endl;
-			return false;
+			return true;
 	            }
 		}
                 return false;
@@ -59,7 +59,7 @@ class TestProcess : public Command {
                     else
 		    {
 	                std::cout << "(False)" << std::endl;
-			return false;
+			return true;
 		    }
 		}
                 return false;
@@ -73,7 +73,7 @@ class TestProcess : public Command {
 		else
 		{
 	            std::cout << "(False)" << std::endl;
-                    return false;
+                    return true;
 		}
 	    }
         }

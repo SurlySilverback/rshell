@@ -3,6 +3,7 @@
 #include "Command.h"
 #include <unistd.h>
 #include <stdlib.h>
+#include <libgen.h>
 
 #define HOME_ENV_KEY "program_root"
 
@@ -24,10 +25,14 @@ class CD: public Command {
 
 bool CD::execute() {
   //if no specified path, default to home
+
   if ( this->path == NULL ) {
     setenv("OLDPWD", getenv("PWD"), 1); 
+    
     chdir(getenv("program_root"));
     setenv("PWD", getenv(HOME_ENV_KEY), 1);
+    chdir(getenv("program_root"));
+    
     return true;
   }
 
@@ -41,7 +46,17 @@ bool CD::execute() {
     return true;
   } 
 
-  if ( static_cast<std::string>(this->path) == ".." ){}
+  // If the entry is "cd .."
+  if ( static_cast<std::string>(this->path) == ".." ){
+    
+    char* new_dir = dirname( getenv("PWD") );   
+
+    setenv("OLDPWD", getenv("PWD"), 1);
+    setenv("PWD", new_dir, 1);
+    chdir(new_dir);
+    
+    return true;
+  }
 
   //If the entry is "cd <PATH>"
   if (chdir(this->path) == 0) {
@@ -53,6 +68,7 @@ bool CD::execute() {
       setenv("PWD", append_relative_path(), 1); 
     return true; 
   }
+
   return false;
 }
 

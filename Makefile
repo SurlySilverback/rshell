@@ -10,6 +10,9 @@ all :
 main :
 	$(CC) $(CFLAGS) ./src/main.cpp
 	
+CD :
+	$(CC) $(CFLAGS) ./src/CD.h
+
 Command :
 	$(CC) $(CFLAGS) ./src/Command.h
 
