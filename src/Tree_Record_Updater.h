@@ -132,7 +132,7 @@ void Tree_Record_Updater::create_process() {
 void Tree_Record_Updater::create_connect() { 
   Tree_Construct_Record* record_to_update = find_record_to_update();
 
-  Command* connector; 
+  Command* connector = NULL; 
   CONNECT_TYPE pending_type = *(record_to_update->pend_connect_type); 
   
   switch(pending_type) {
