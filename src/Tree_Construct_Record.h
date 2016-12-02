@@ -48,16 +48,21 @@ struct Tree_Construct_Record {
     root(NULL), 
     l_child(NULL), 
     r_child(NULL),
+
     pend_connect_init(false),
     pend_process_init(false),  
     pend_dir_change(false),
+
     pend_process_name(NULL), 
     pend_connect_type(NULL),
+
+    pend_test_init(false),
+    pend_preced_op(false), 
+
     pend_arg_num(0),
     arg_array_size(arg_array_size),
     pend_args(new char*[arg_array_size]),
-    pend_test_init(false),
-    pend_preced_op(false), 
+
     child_record(NULL),
     parent_record(parent)
   {
